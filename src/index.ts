@@ -1,6 +1,5 @@
 import './scss/styles.scss';
 
-import { Api } from './components/base/Api';
 import { Component } from './components/base/Component';
 import { Model } from './components/model/Model';
 import { Basket } from './components/view/Basket';
@@ -10,10 +9,12 @@ import { Order } from './components/view/Order';
 import { Page } from './components/view/Page';
 import { Success } from './components/view/Success';
 import { API_URL, CDN_URL } from './utils/constants';
-import { ensureElement } from './utils/utils';
+import { cloneTemplate, ensureElement } from './utils/utils';
 import { LarekAPI } from './components/base/LarekApi';
 import { AppState } from './components/model/AppData';
 import { EventEmitter } from './components/base/Events';
+import { Api } from './components/base/Api';
+import { Tabs } from './components/view/Tabs';
 
 const events = new EventEmitter();
 const api = new LarekAPI(CDN_URL, API_URL);
@@ -41,4 +42,12 @@ const appData = new AppState({}, events);
 const page = new Page(document.body, events);
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 
-// Переиспользуемые части интерфейса.
+// Переиспользуемые части интерфейса
+const basket = new Basket(cloneTemplate(basketTemplate), events);
+const tabs = new Tabs(cloneTemplate(tabsTemplate), {
+    onClick: (name) => {
+        if (name === 'closed') events.emit('basket:open');
+        else events.emit('bids:open');
+    }
+});
+const order = new Order(cloneTemplate(orderTemplate), events);

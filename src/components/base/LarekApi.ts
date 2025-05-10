@@ -1,12 +1,10 @@
-import { IOrder, IProductItem, LotUpdate, IBid } from "../types";
+import { IOrder, IProductItem } from './../../types/index';
 import { Api, ApiListResponse } from "./Api";
 
 export interface ILarekAPI {
-    getLotList: () => Promise<IProductItem[]>;
+    getItems: () => Promise<IProductItem[]>;
     getItem: (id: string) => Promise<IProductItem>;
-    getLotUpdate: (id: string) => Promise<LotUpdate>;
-    placeBid(id: string, bid: IBid): Promise<LotUpdate>;
-    orderLots: (order: IOrder) => Promise<IOrderResult>;
+    orderItems: (order: IOrder) => Promise<IOrderResult>;
 }
 
 export interface IOrderResult {
@@ -30,13 +28,7 @@ export class LarekAPI extends Api implements ILarekAPI {
         );
     }
 
-    getLotUpdate(id: string): Promise<LotUpdate> {
-        return this.get(`/product/${id}/_auction`).then(
-            (data: LotUpdate) => data
-        );
-    }
-
-    getLotList(): Promise<IProductItem[]> {
+    getItems(): Promise<IProductItem[]> {
         return this.get('/lot').then((data: ApiListResponse<IProductItem>) =>
             data.items.map((item) => ({
                 ...item,
@@ -45,13 +37,7 @@ export class LarekAPI extends Api implements ILarekAPI {
         );
     }
 
-    placeBid(id: string, bid: IBid): Promise<LotUpdate> {
-        return this.post(`/lot/${id}/_bid`, bid).then(
-            (data: IProductItem) => data
-        );
-    }
-
-    orderLots(order: IOrder): Promise<IOrderResult> {
+    orderItems(order: IOrder): Promise<IOrderResult> {
         return this.post('/order', order).then(
             (data: IOrderResult) => data
         );
