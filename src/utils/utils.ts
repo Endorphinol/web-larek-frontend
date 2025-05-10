@@ -102,6 +102,10 @@ export function isBoolean(v: unknown): v is boolean {
     return typeof v === 'boolean';
 }
 
+export function formatNumber(x: number, sep = ' ') {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, sep);
+}
+
 /**
  * Фабрика DOM-элементов в простейшей реализации
  * здесь не учтено много факторов
