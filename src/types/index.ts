@@ -11,16 +11,17 @@ export interface IProductItem {
 	price: number | null;
 }
 
-export interface IOrderForm {
-    email: string;
-    phone: string;
-}
 export interface IOrder {
     payment: string;
     address: string;
     email: string;
     phone: string;
     items: string[];
+    total: number;
+}
+
+export interface IOrderResult {
+    id: string;
     total: number;
 }
 

@@ -11,10 +11,11 @@ import { Success } from './components/view/Success';
 import { API_URL, CDN_URL } from './utils/constants';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { LarekAPI } from './components/base/LarekApi';
-import { AppState } from './components/model/AppData';
+import { AppState, CatalogChangeEvent } from './components/model/AppData';
 import { EventEmitter } from './components/base/Events';
 import { Api } from './components/base/Api';
 import { Tabs } from './components/view/Tabs';
+import { Card } from './components/view/Card';
 
 const events = new EventEmitter();
 const api = new LarekAPI(CDN_URL, API_URL);
