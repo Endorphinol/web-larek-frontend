@@ -1,6 +1,6 @@
 import {Component} from "../base/Component";
 import { createElement, ensureElement, formatNumber } from "../../utils/utils";
-import { EventEmitter, IEvents } from './../base/events';
+import { EventEmitter } from './../base/Events';
 
 
 interface IBasketView {

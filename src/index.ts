@@ -11,9 +11,9 @@ import { Page } from './components/view/Page';
 import { Success } from './components/view/Success';
 import { API_URL, CDN_URL } from './utils/constants';
 import { ensureElement } from './utils/utils';
-import { EventEmitter } from './components/base/events';
 import { LarekAPI } from './components/base/LarekApi';
 import { AppState } from './components/model/AppData';
+import { EventEmitter } from './components/base/Events';
 
 const events = new EventEmitter();
 const api = new LarekAPI(CDN_URL, API_URL);
