@@ -1,4 +1,4 @@
-import { Component } from "../base/Component";
+    import { Component } from "../base/Component";
 import { ensureElement } from "../../utils/utils";
 import { IProductItem } from "../../types";
 
@@ -12,6 +12,7 @@ export class Card extends Component<IProductItem> {
     protected _category: HTMLElement;
     protected _price: HTMLElement;
     protected _button?: HTMLButtonElement;
+    protected _description?: HTMLElement
 
     constructor(container: HTMLElement, actions?: ICardActions) {
         super(container);
@@ -21,6 +22,7 @@ export class Card extends Component<IProductItem> {
         this._category = ensureElement<HTMLElement>('.card__category', container);
         this._price = ensureElement<HTMLElement>('.card__price', container);
         this._button = container.querySelector('.card__button');
+        
 
         if (actions?.onClick) {
             if (this._button) {
@@ -39,14 +41,26 @@ export class Card extends Component<IProductItem> {
         this.setText(this._price, value);
     }
 
+    set description(value: string) {
+        if (this._description) {
+            this.setText(this._description, value);
+        }
+    }
+
     render(data: IProductItem & { buttonText?: string }): HTMLElement {
+        super.render(data); 
         this.setText(this._title, data.title);
         this.setImage(this._image, data.image, data.title);
         this.category = data.category;
         this.price = data.price !== null ? `${data.price} синапсов` : 'Бесценно';
         
+        if (this._description && data.description) {
+            this.description = data.description;
+        }
+
         if (this._button && data.buttonText) {
             this.setText(this._button, data.buttonText);
+            this._button.disabled = data.price === null;
         }
         
         return this.container;

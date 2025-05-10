@@ -45,3 +45,6 @@ export interface IWrongTotal {
 export interface INoAddress {
     error: string;
 }
+
+export type FormErrors = Partial<Record<keyof IOrder, string>>;
+

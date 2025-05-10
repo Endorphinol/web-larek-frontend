@@ -2,7 +2,7 @@ import { IEvents } from './../base/events';
 import { IProductItem } from '../../types';
 
 export class Model {
-	items: IProductItem[] = [];
+	protected items: IProductItem[] = [];
 
 	constructor(protected events: IEvents) {}
 

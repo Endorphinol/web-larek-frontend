@@ -10,16 +10,18 @@ import { Page } from './components/view/Page';
 import { Success } from './components/view/Success';
 import { API_URL, CDN_URL } from './utils/constants';
 import { cloneTemplate, ensureElement } from './utils/utils';
-import { LarekAPI } from './components/base/LarekApi';
-import { AppState, CatalogChangeEvent } from './components/model/AppData';
-import { EventEmitter } from './components/base/Events';
-import { Api } from './components/base/Api';
+import { LarekAPI } from './components/model/LarekApi';
+import { EventEmitter } from './components/base/events';
+import { Api } from './components/base/api';
 import { Tabs } from './components/view/Tabs';
 import { Card } from './components/view/Card';
 
 const events = new EventEmitter();
 const api = new LarekAPI(CDN_URL, API_URL);
-
+console.log(api.getItems());
+console.log(api.getItems());
+const model = new Model(events);
+console.log(model.getItems());
 
 // Чтобы мониторить все события, для отладки
 events.onAll(({ eventName, data }) => {
@@ -37,7 +39,7 @@ const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
 
 
 // Модель данных приложения.
-const appData = new AppState({}, events);
+// const appData = new AppState({}, events);
 
 // Глобальные контейнеры.
 const page = new Page(document.body, events);
@@ -45,10 +47,10 @@ const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 
 // Переиспользуемые части интерфейса
 const basket = new Basket(cloneTemplate(basketTemplate), events);
-const tabs = new Tabs(cloneTemplate(tabsTemplate), {
-    onClick: (name) => {
-        if (name === 'closed') events.emit('basket:open');
-        else events.emit('bids:open');
-    }
-});
+// const tabs = new Tabs(cloneTemplate(tabsTemplate), {
+//     onClick: (name) => {
+//         if (name === 'closed') events.emit('basket:open');
+//         else events.emit('bids:open');
+//     }
+// });
 const order = new Order(cloneTemplate(orderTemplate), events);
