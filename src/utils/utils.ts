@@ -1,3 +1,18 @@
+import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
+import calendar from 'dayjs/plugin/calendar';
+import duration from 'dayjs/plugin/duration';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.locale('ru');
+dayjs.extend(calendar);
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+
+export {
+    dayjs
+};
+
 export function pascalToKebab(value: string): string {
     return value.replace(/([a-z0–9])([A-Z])/g, "$1-$2").toLowerCase();
 }
@@ -8,6 +23,14 @@ export function isSelector(x: any): x is string {
 
 export function isEmpty(value: any): boolean {
     return value === null || value === undefined;
+}
+
+export function capitalize(value: string): string {
+    return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+export function formatNumber(x: number, sep = ' ') {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, sep);
 }
 
 export type SelectorCollection<T> = string | NodeListOf<Element> | T[];
@@ -102,10 +125,6 @@ export function isBoolean(v: unknown): v is boolean {
     return typeof v === 'boolean';
 }
 
-export function formatNumber(x: number, sep = ' ') {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, sep);
-}
-
 /**
  * Фабрика DOM-элементов в простейшей реализации
  * здесь не учтено много факторов
@@ -136,4 +155,35 @@ export function createElement<
         }
     }
     return element;
+}
+
+type Callback<T> = (key: string, value: unknown) => void;
+
+/**
+ * Рекурсивно оборачивает объект в Proxy
+ * @param obj
+ * @param callback
+ */
+export function makeObservable<T extends object>(obj: T, callback: Callback<T>): T {
+    return new Proxy(obj, {
+        get(target: T & Record<string, unknown>, key: string): any {
+            const value = target[key];
+
+            if (value && typeof value === 'object') {
+                return makeObservable(value, (nestedKey, nestedValue) => {
+                    const fullPath = `${key}.${nestedKey}`;
+                    callback(fullPath, nestedValue);
+                });
+            }
+
+            return value;
+        },
+        set(target: T, key: string, value: unknown, receiver: T): boolean {
+            let success = Reflect.set(target, key, value, receiver);
+            if (success) {
+                callback(key, value);
+            }
+            return success;
+        },
+    });
 }

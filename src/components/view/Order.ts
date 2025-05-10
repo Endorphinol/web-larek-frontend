@@ -1,4 +1,4 @@
-import { IEvents } from './../base/Events';
+import { IEvents } from './../base/events';
 import { Form } from "./Form";
 
 export interface IOrderForm {
