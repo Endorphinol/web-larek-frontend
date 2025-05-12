@@ -22,24 +22,32 @@ export class AppState extends Model {
     preview: string | null;
     formErrors: FormErrors = {};
 
-
-    clearBasket() {
-        this.basket = [];
-        this.order.items = [];
-        this.order.total = 0;
-        this.events.emit('basket:cleared');
-    }
-
     getTotal() {
         return this.basket.reduce((total, id) => {
             const item = this.catalog.find(item => item.id === id);
-            return total + (item.price || 0);
+            return total + (item?.price || 0);
         }, 0);
     }
 
     setCatalog(items: IProductItem[]) {
         this.catalog = items; 
         this.events.emit('items:changed', { catalog: this.catalog });
+    }
+
+    addToBasket(item: IProductItem) {
+        if (!this.basket.includes(item.id)) {
+            this.basket.push(item.id);
+            this.events.emit('basket:changed');
+        }
+    }
+    removeFromBasket(id: string) {
+        this.basket = this.basket.filter(item => item !== id);
+        this.events.emit('basket:changed');
+    }
+    
+    clearBasket() {
+        this.basket = [];
+        this.events.emit('basket:changed');
     }
 
     setPreview(item: IProductItem) {

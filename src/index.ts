@@ -21,14 +21,14 @@ const appData = new AppState(events);
 // Шаблоны
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
-const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
+const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#basket');
 const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 
 // Компоненты
 const page = new Page(document.body, events);
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
-const basket = new Basket(cloneTemplate(basketTemplate), events);
+const basket = new Basket(cloneTemplate(cardBasketTemplate), events);
 const order = new Order(cloneTemplate(orderTemplate), events);
 
 // Загрузка товаров
@@ -40,8 +40,6 @@ api.getItems()
     .catch(err => {
         console.error('Ошибка загрузки товаров:', err);
     });
-
-// Обработчики событий
 
 // Обновление каталога
 events.on('items:changed', () => {
@@ -60,7 +58,9 @@ events.on('items:changed', () => {
 // Выбор товара
 events.on('card:select', (item: IProductItem) => {
     appData.setPreview(item);
-    const card = new Card('card', cloneTemplate(cardPreviewTemplate));
+    const card = new Card('card', cloneTemplate(cardPreviewTemplate), {
+        onClick: () => events.emit('basket:toggle', item) 
+    });
     modal.render({
         content: card.render({
             ...item,
@@ -75,7 +75,7 @@ events.on('basket:changed', () => {
     page.counter = appData.basket.length;
     basket.items = appData.basket.map(id => {
         const item = appData.catalog.find(it => it.id === id);
-        const card = new Card('card', cloneTemplate(basketTemplate), {
+        const card = new Card('card', cloneTemplate(cardBasketTemplate), {
             onClick: () => events.emit('basket:remove')
         });
         return card.render({
@@ -105,6 +105,44 @@ events.on('order:submit', () => {
         .catch(err => {
             console.error('Ошибка оформления заказа:', err);
         });
+});
+
+// Открытие корзины.
+page.basketButton.addEventListener('click', () => {
+    events.emit('basket:open');
+});
+
+// Добавление/удаление товара
+events.on('basket:toggle', (item: IProductItem) => {
+    if (appData.basket.includes(item.id)) {
+        appData.removeFromBasket(item.id);
+    } else {
+        appData.addToBasket(item);
+    }
+});
+
+// Обновление корзины
+events.on('basket:open', () => {
+    basket.items = appData.basket.map(id => {
+        const item = appData.catalog.find(item => item.id === id);
+        const card = new Card('card', cloneTemplate(cardBasketTemplate), {
+            onClick: () => events.emit('basket:remove', { id }) 
+        });
+        return card.render({
+            ...item,
+            buttonText: 'Убрать'
+        });
+    });
+    basket.total = appData.getTotal();
+    modal.render({
+        content: basket.render()
+    });
+});
+
+// Удаление товара из корзины.
+events.on('basket:remove', (event: { id: string }) => {
+    appData.removeFromBasket(event.id);
+    events.emit('basket:changed');
 });
 
 // Блокировка прокрутки при открытии модального окна

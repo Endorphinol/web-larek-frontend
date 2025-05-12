@@ -38,6 +38,10 @@ export class Page extends Component<IPage> {
         this._catalog.replaceChildren(...items);
         this.events.emit('catalog:updated');
     }
+
+    get basketButton(): HTMLButtonElement {
+        return ensureElement<HTMLButtonElement>('.header__basket');
+    }
      // Блокировка прокрутки страницы.
     set locked(value: boolean) {
         if (value) {
