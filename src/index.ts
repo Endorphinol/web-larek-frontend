@@ -208,28 +208,28 @@ events.on('order:open', () => {
     });
 });
 
-// Изменение способа оплаты
+// Изменение способа оплаты.
 events.on('order.payment:change', (data: { field: keyof IOrderForm, value: string }) => {
     appData.setOrderField(data.field, data.value);
-});
+  });
   
-  // Изменение адреса
+  // Изменение адреса.
   events.on('order.address:change', (data: { field: keyof IOrderForm, value: string }) => {
     appData.setOrderField(data.field, data.value);
-});
-// Изменение email
+  });
+
+// Изменение email.
 events.on('contacts.email:change', (data: { field: keyof IContactsForm, value: string }) => {
     appData.setOrderField(data.field as 'email' | 'phone', data.value);
 });
 
-// Изменение телефона
+// Изменение телефона.
 events.on('contacts.phone:change', (data: { field: keyof IContactsForm, value: string }) => {
     appData.setOrderField(data.field as 'email' | 'phone', data.value);
 });
   
-  // Обновление состояния формы
+  // Обновление состояния формы.
   events.on('formErrors:change', (errors: FormErrors) => {
     const messages = Object.values(errors).filter(Boolean).join('; ');
     order.errors = messages;
-    order.valid = !messages;
   });

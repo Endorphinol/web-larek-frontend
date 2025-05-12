@@ -1,4 +1,10 @@
-import { FormErrors, IContactsForm, IOrder, IOrderForm, IProductItem } from './../../types/index';
+import {
+	FormErrors,
+	IContactsForm,
+	IOrder,
+	IOrderForm,
+	IProductItem,
+} from './../../types/index';
 import { Model } from './Model';
 
 export type CatalogChangeEvent = {
@@ -63,14 +69,14 @@ export class AppState extends Model {
 		this.events.emit('preview:changed', item);
 	}
 
-setOrderField(field: keyof IOrderForm | keyof IContactsForm, value: string) {
-    if (field === 'payment' || field === 'address') {
-        this.order[field] = value;
-    } else if (field === 'email' || field === 'phone') {
-        this.order[field] = value;
-    }
-    this.validateOrder();
-}
+	setOrderField(field: keyof IOrderForm | keyof IContactsForm, value: string) {
+		if (field === 'payment' || field === 'address') {
+			this.order[field] = value;
+		} else if (field === 'email' || field === 'phone') {
+			this.order[field] = value;
+		}
+		this.validateOrder();
+	}
 
 	// Валидация заказа.
 	validateOrder() {
@@ -80,14 +86,12 @@ setOrderField(field: keyof IOrderForm | keyof IContactsForm, value: string) {
 			errors.payment = 'Выберите способ оплаты';
 		}
 
-		if (!this.order.address) {
-			errors.address = 'Введите адрес доставки';
+		if (!this.order.address || this.order.address.trim().length < 5) {
+			errors.address = 'Введите корректный адрес (минимум 5 символов)';
 		}
 
 		this.formErrors = errors;
 		this.events.emit('formErrors:change', this.formErrors);
-		this.events.emit('order:ready', this.order);
-
 		return Object.keys(errors).length === 0;
 	}
 }

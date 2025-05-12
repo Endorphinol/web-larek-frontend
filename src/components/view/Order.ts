@@ -1,14 +1,15 @@
-import { IOrderForm } from './../../types/index';
-import { Component } from "../base/Component";
+import { IOrderForm } from "../../types";
 import { ensureElement } from "../../utils/utils";
+import { Component } from "../base/Component";
 import { EventEmitter } from "../base/events";
-import { IOrder } from "../../types";
 
-export class Order extends Component<IOrder> {
+
+export class Order extends Component<IOrderForm> {
   protected _paymentButtons: HTMLButtonElement[];
   protected _addressInput: HTMLInputElement;
   protected _submitButton: HTMLButtonElement;
   protected _errors: HTMLElement;
+  protected _selectedPayment: string | null = null;
 
   constructor(container: HTMLFormElement, protected events: EventEmitter) {
     super(container);
@@ -20,11 +21,18 @@ export class Order extends Component<IOrder> {
 
     this._paymentButtons.forEach(button => {
       button.addEventListener('click', () => {
-        this.selectPayment(button.value as 'online' | 'offline');
+        this._selectedPayment = button.value;
+        this._updatePaymentUI();
+        this._validateForm();
+        this.events.emit('order.payment:change', {
+          field: 'payment',
+          value: button.value
+        });
       });
     });
 
     this._addressInput.addEventListener('input', () => {
+      this._validateForm();
       this.events.emit('order.address:change', {
         field: 'address',
         value: this._addressInput.value
@@ -32,31 +40,25 @@ export class Order extends Component<IOrder> {
     });
   }
 
-  selectPayment(payment: 'online' | 'offline') {
+  private _updatePaymentUI() {
     this._paymentButtons.forEach(button => {
-      button.classList.toggle('button_alt-active', button.value === payment);
-    });
-    this.events.emit('order.payment:change', {
-      field: 'payment',
-      value: payment
+      button.classList.toggle(
+        'button_alt-active', 
+        button.value === this._selectedPayment
+      );
     });
   }
 
+  private _validateForm() {
+    const isValid = Boolean(this._selectedPayment) && this._addressInput.value.trim().length > 0;
+    this.setDisabled(this._submitButton, !isValid);
+  }
+
   set valid(value: boolean) {
-    this._submitButton.disabled = !value;
+    this.setDisabled(this._submitButton, !value);
   }
 
   set errors(value: string) {
     this.setText(this._errors, value);
-  }
-
-  render(data?: Partial<IOrderForm>): HTMLElement {
-    if (data.payment) {
-      this.selectPayment(data.payment as 'online' | 'offline');
-    }
-    if (data.address) {
-      this._addressInput.value = data.address;
-    }
-    return this.container;
   }
 }
