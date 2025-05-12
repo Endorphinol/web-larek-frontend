@@ -1,5 +1,5 @@
 import { Component } from "../base/Component";
-import { createElement, ensureElement, formatNumber } from "../../utils/utils";
+import { ensureElement, formatNumber } from "../../utils/utils";
 import { EventEmitter } from "../base/events";
 
 // Инициализация интерфейса.
@@ -13,13 +13,13 @@ interface IBasketView {
 export class Basket extends Component<IBasketView> {
     protected _list: HTMLElement;
     protected _total: HTMLElement;
+    protected _price: HTMLElement;
     protected _button: HTMLButtonElement;
 
     constructor(container: HTMLTemplateElement, protected events: EventEmitter) {
         super(container);
-
         this._list = ensureElement<HTMLElement>('.basket__list', this.container);
-        this._total = ensureElement<HTMLElement>('.basket__total', container);
+        this._price = ensureElement<HTMLElement>('.basket__price', container);
         this._button = ensureElement<HTMLButtonElement>('.basket__button', container);
 
         if (this._button) {
