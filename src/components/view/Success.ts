@@ -1,12 +1,7 @@
 import { Component } from "../base/Component";
 import { ensureElement } from "../../utils/utils";
-import { ISuccess } from "../../types";
+import { ISuccess, ISuccessActions } from "../../types";
 
-
-// Реализиация интерфейса.
-interface ISuccessActions {
-    onClick: () => void;
-}
 // Инициализация класса.
 export class Success extends Component<ISuccess> {
     protected _close: HTMLButtonElement;
@@ -24,7 +19,10 @@ export class Success extends Component<ISuccess> {
             this._close.addEventListener('click', actions.onClick);
         }
     }
-    // Списаное количество.
+    /**
+     * Указание суммы списания.
+     * @param value Сумма заказа.
+     */
     set total(value: number) {
         this.setText(this._description, `Списано ${value} синапсов`);
     }

@@ -1,11 +1,5 @@
 import { Component } from "../base/Component";
-import { ensureElement, formatNumber } from "../../utils/utils";
-import { IProductItem } from "../../types";
-
-// Инициализация интерфейса.
-interface ICardActions {
-    onClick: (event: MouseEvent) => void;
-}
+import { ICardActions, IProductItem } from "../../types";
 
 // Создание класса элемент карточки.
 export class Card extends Component<IProductItem> {

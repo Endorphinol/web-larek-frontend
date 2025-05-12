@@ -7,14 +7,15 @@ import {
 } from './../../types/index';
 import { Model } from './Model';
 
+// Реализация интерфейса.
 export type CatalogChangeEvent = {
 	catalog: IProductItem[];
 };
+// Объявление класса.
 export class AppState extends Model {
-	basket: string[] = [];
-	catalog: IProductItem[];
-	loading: boolean;
-	order: IOrder = {
+	private _basket: string[] = [];
+	private _catalog: IProductItem[];
+	private _order: IOrder = {
 		email: '',
 		phone: '',
 		items: [],
@@ -22,10 +23,32 @@ export class AppState extends Model {
 		address: '',
 		total: 0,
 	};
+	private _preview: string | null;
+	private _formErrors: FormErrors = {};
 
-	preview: string | null;
-	formErrors: FormErrors = {};
+	// Получить корзину.
+	get basket(): string[] {
+		return [...this._basket];
+	}
+	// Получить католог товаров.
+	get catalog(): IProductItem[] {
+		return [...this._catalog];
+	}
+	// Получить заказ.
+	get order(): IOrder {
+		return { ...this._order };
+	}
+	// Получить просматриваемый товар.
+	get preview(): string | null {
+		return this._preview;
+	}
 
+	// Получить ошибки формы при валидации.
+	get formErrors(): FormErrors {
+		return { ...this._formErrors };
+	}
+
+	// Общая стоимость корзины.
 	getTotal() {
 		return this.basket.reduce((total, id) => {
 			const item = this.catalog.find((item) => item.id === id);
@@ -34,7 +57,7 @@ export class AppState extends Model {
 	}
 
 	setCatalog(items: IProductItem[]) {
-		this.catalog = items;
+		this._catalog = items;
 		this.events.emit('items:changed', { catalog: this.catalog });
 	}
 
@@ -54,18 +77,18 @@ export class AppState extends Model {
 
 	// Удалить товар с корзины.
 	removeFromBasket(id: string) {
-		this.basket = this.basket.filter((item) => item !== id);
+		this._basket = this.basket.filter((item) => item !== id);
 		this.updateBasket();
 	}
 
 	// Очистить корзину.
 	clearBasket() {
-		this.basket = [];
+		this._basket = [];
 		this.updateBasket();
 	}
-
+    
 	setPreview(item: IProductItem) {
-		this.preview = item.id;
+		this._preview = item.id;
 		this.events.emit('preview:changed', item);
 	}
 
@@ -90,8 +113,8 @@ export class AppState extends Model {
 			errors.address = 'Введите корректный адрес (минимум 5 символов)';
 		}
 
-		this.formErrors = errors;
-		this.events.emit('formErrors:change', this.formErrors);
+		this._formErrors = errors;
+		this.events.emit('formErrors:change', this._formErrors);
 		return Object.keys(errors).length === 0;
 	}
 }

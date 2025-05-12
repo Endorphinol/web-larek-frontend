@@ -1,5 +1,5 @@
 export interface IProductList {
-    items: IProductItem[];
+	items: IProductItem[];
 }
 
 export interface IProductItem {
@@ -13,39 +13,49 @@ export interface IProductItem {
 }
 // Основной интерфейс заказа.
 export interface IOrder {
-    payment: string;
-    address: string;
-    email: string;
-    phone: string;
-    items: string[];
-    total: number;
+	payment: string;
+	address: string;
+	email: string;
+	phone: string;
+	items: string[];
+	total: number;
 }
 
 // Интерфейс для формы заказа (первый шаг).
 export interface IOrderForm {
-    payment: string;
-    address: string;
+	payment: string;
+	address: string;
 }
 
 // Интерфейс для формы контактов (второй шаг).
 export interface IContactsForm {
-    email: string;
-    phone: string;
+	email: string;
+	phone: string;
 }
 
 export interface IBasketItem {
-    index: number;
-    title: string;
-    price: number;
+	index: number;
+	title: string;
+	price: number;
 }
 
 export interface IBasketItemActions {
-    onClick: (event: MouseEvent) => void;
+	onClick: (event: MouseEvent) => void;
+}
+
+export interface IPage {
+	_counter: number;
+	_catalog: HTMLElement[];
+	_locked: boolean;
 }
 
 export interface IOrderResult {
-    id: string;
-    total: number;
+	id: string;
+	total: number;
+}
+
+export interface ISuccessActions {
+	onClick: () => void;
 }
 
 export interface INotFoundGet {
@@ -67,7 +77,7 @@ export interface IWrongTotal {
 }
 
 export interface INoAddress {
-    error: string;
+	error: string;
 }
 
 export type FormErrors = Partial<Record<keyof IOrder, string>>;
@@ -77,9 +87,17 @@ export interface IOrderForm {
 	payment: string;
 	email: string;
 	phone: string;
-  }
-  
-  export interface IModalData {
-	title: string;
+}
+
+export interface ICardActions {
+	onClick: (event: MouseEvent) => void;
+}
+
+export interface IModalData {
 	content: HTMLElement;
-  }
+}
+
+export interface IFormState {
+	valid: boolean;
+	errors: string[];
+}

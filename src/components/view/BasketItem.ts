@@ -8,7 +8,6 @@ export class BasketItem extends Component<IBasketItem> {
     protected _price: HTMLElement;
     protected _button: HTMLButtonElement;
 
-
     constructor(container: HTMLElement, actions?: IBasketItemActions) {
         super(container);
 
@@ -28,5 +27,4 @@ export class BasketItem extends Component<IBasketItem> {
         this.setText(this._price, `${item.price} синапсов`);
         return this.container;
     }
-
 }

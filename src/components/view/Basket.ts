@@ -12,7 +12,6 @@ interface IBasketView {
 // Создание класса корзины.
 export class Basket extends Component<IBasketView> {
     protected _list: HTMLElement;
-    protected _total: HTMLElement;
     protected _price: HTMLElement;
     protected _button: HTMLButtonElement;
 
@@ -38,7 +37,7 @@ export class Basket extends Component<IBasketView> {
 
     // Подсчитать общую стоимость.
     set total(total: number) {
-        this.setText(this._total, `${formatNumber(total)} синапсов`);
+        this.setText(this._price, `${formatNumber(total)} синапсов`);
     }
 
     // Установка текста на кнопку.
