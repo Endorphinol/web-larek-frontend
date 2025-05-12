@@ -13,6 +13,7 @@ import { Modal } from './components/view/Modal';
 import { Page } from './components/view/Page';
 import { AppState } from './components/model/AppData';
 import { BasketItem } from './components/view/BasketItem';
+import { Contacts } from './components/view/Contacts';
 
 // Инициализация основных объектов
 const events = new EventEmitter();
@@ -25,6 +26,7 @@ const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#basket');
 const cardBasketItemTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
 const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
+const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 
 // Компоненты
@@ -93,25 +95,6 @@ events.on('basket:changed', () => {
     basket.total = appData.getTotal();
 });
 
-// Оформление заказа
-events.on('order:submit', () => {
-    api.orderItems(appData.order)
-        .then(() => {
-            const success = new Success(cloneTemplate(successTemplate), {
-                onClick: () => {
-                    modal.close();
-                    appData.clearBasket();
-                }
-            });
-            success.total = appData.getTotal();
-            modal.render({
-                content: success.render({})
-            });
-        })
-        .catch(err => {
-            console.error('Ошибка оформления заказа:', err);
-        });
-});
 
 // Открытие корзины.
 page.basketButton.addEventListener('click', () => {
@@ -164,14 +147,13 @@ events.on('modal:close', () => {
 // Обработка успешного оформления заказа
 events.on('order:success', () => {
     const success = new Success(cloneTemplate(successTemplate), {
-        onClick: () => {
-            modal.close();
-            appData.clearBasket();
-            events.emit('basket:changed');
-        }
+        onClick: () => modal.close()
     });
+    
     modal.render({
-        content: success.render({})
+        content: success.render({
+            description: `Списано ${appData.getTotal()} синапсов`
+        })
     });
 });
 
@@ -227,9 +209,53 @@ events.on('contacts.email:change', (data: { field: keyof IContactsForm, value: s
 events.on('contacts.phone:change', (data: { field: keyof IContactsForm, value: string }) => {
     appData.setOrderField(data.field as 'email' | 'phone', data.value);
 });
+
+// Оформление заказа
+events.on('order:submit', (data: { payment: string, address: string }) => {
+    appData.setOrderField('payment', data.payment);
+    appData.setOrderField('address', data.address);
+    
+    events.emit('contacts:open');
+    events.emit('modal:close');
+});
+
+events.on('contacts:open', () => {
+    const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
+    modal.render({
+        content: contacts.render({
+            email: appData.order.email,
+            phone: appData.order.phone
+        })
+    });
+});
   
   // Обновление состояния формы.
   events.on('formErrors:change', (errors: FormErrors) => {
     const messages = Object.values(errors).filter(Boolean).join('; ');
     order.errors = messages;
   });
+
+  events.on('contacts:submit', (data: { email: string; phone: string }) => {
+    appData.setOrderField('email', data.email);
+    appData.setOrderField('phone', data.phone);
+    
+    if (appData.validateOrder()) {
+        api.orderItems({
+            payment: appData.order.payment,
+            address: appData.order.address,
+            email: appData.order.email,
+            phone: appData.order.phone,
+            items: appData.basket,
+            total: appData.getTotal()
+        })
+        .then(() => {
+            modal.close();
+            appData.clearBasket();
+            events.emit('basket:changed'); 
+            events.emit('order:success');
+        })
+        .catch(err => {
+            console.error(err);
+        });
+    }
+});

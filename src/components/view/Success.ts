@@ -1,11 +1,8 @@
 import { Component } from "../base/Component";
 import { ensureElement } from "../../utils/utils";
+import { ISuccess } from "../../types";
 
 
-// Реализиация интерфейса.
-interface ISuccess {
-    _total: number;
-}
 // Реализиация интерфейса.
 interface ISuccessActions {
     onClick: () => void;

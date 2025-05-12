@@ -55,6 +55,7 @@ export interface INotFoundGet {
 export interface ISuccess {
 	id: string;
 	total: number;
+	description: string;
 }
 
 export interface INotFoundPost {

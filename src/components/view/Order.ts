@@ -22,9 +22,8 @@ export class Order extends Component<IOrderForm> {
   
       // Обработчики для кнопок оплаты
       this._paymentButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-          e.preventDefault(); // Добавьте это, чтобы форма не отправлялась
-          this._selectedPayment = button.value;
+        button.addEventListener('click', () => {
+          this._selectedPayment = button.name; // Используем name вместо value
           this._updatePaymentUI();
           this._validateForm();
           this.events.emit('order.payment:change', {
@@ -43,17 +42,24 @@ export class Order extends Component<IOrderForm> {
         });
       });
   
+      // Обработчик отправки формы
+      this.container.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (this._selectedPayment && this._addressInput.value) {
+          this.events.emit('order:submit', {
+            payment: this._selectedPayment,
+            address: this._addressInput.value
+          });
+        }
+      });
+  
       // Изначальная валидация
       this._validateForm();
     }
   
     private _updatePaymentUI() {
       this._paymentButtons.forEach(button => {
-        if (button.value === this._selectedPayment) {
-          button.classList.add('button_alt-active');
-        } else {
-          button.classList.remove('button_alt-active');
-        }
+        button.classList.toggle('button_alt-active', button.name === this._selectedPayment);
       });
     }
   
@@ -63,7 +69,6 @@ export class Order extends Component<IOrderForm> {
       this.setDisabled(this._submitButton, !(isAddressValid && isPaymentSelected));
     }
   
-    // Остальные методы остаются без изменений
     set valid(value: boolean) {
       this.setDisabled(this._submitButton, !value);
     }
@@ -71,4 +76,4 @@ export class Order extends Component<IOrderForm> {
     set errors(value: string) {
       this.setText(this._errors, value);
     }
-  }
+}
