@@ -36,25 +36,23 @@ export class AppState extends Model {
     addToBasket(item: IProductItem) {
         if (!this.basket.includes(item.id)) {
             this.basket.push(item.id);
-            this.events.emit('basket:changed');
-            this.emitBasketUpdate();
+            this.updateBasket();
         }
-    };
+    }
+
+    private updateBasket() {
+        this.events.emit('basket:changed');
+        this.events.emit('counter:updated', { basket: this.basket.length });
+    }
 
     removeFromBasket(id: string) {
         this.basket = this.basket.filter(item => item !== id);
-        this.events.emit('basket:changed');
-        this.emitBasketUpdate();
-    }
-
-    private emitBasketUpdate() {
-        this.events.emit('basket:changed');
-        this.events.emit('counter:updated', this.basket.length);
+        this.updateBasket();
     }
     
     clearBasket() {
         this.basket = [];
-        this.events.emit('basket:changed');
+        this.updateBasket();
     }
 
     setPreview(item: IProductItem) {

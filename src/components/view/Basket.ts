@@ -29,7 +29,6 @@ export class Basket extends Component<IBasketView> {
                 events.emit('order:open');
             });
         }
-        this.items = [];
     }
 
     // Поместить товар в корзину.
@@ -38,15 +37,11 @@ export class Basket extends Component<IBasketView> {
         this._button.disabled = items.length === 0;
     }
 
-     set selected(items: string[]) {
-        this.setDisabled(this._button, items.length === 0);
-    }
-
     // Подсчитать общую стоимость.
     set total(total: number) {
         this.setText(this._total, `${formatNumber(total)} синапсов`);
     }
-    
+
     // Установка текста на кнопку.
     set buttonText(value: string) {
         this.setText(this._button, value);

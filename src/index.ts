@@ -50,9 +50,11 @@ events.on('items:changed', () => {
             onClick: () => events.emit('card:select', item)
         });
         return card.render({
-            ...item,
+            title: item.title,
+            image: item.image,
             price: item.price,
-            buttonText: 'В корзину'
+            category: item.category,
+            id: ''
         });
     });
 });
@@ -208,6 +210,6 @@ events.on('order:open', () => {
 });
 
 // Обновление счетчика.
-events.on('counter:updated', (count: number) => {
-    page.counter = count;
+events.on('counter:updated', (event: { count: number }) => {
+    page.counter = event.count;
 });

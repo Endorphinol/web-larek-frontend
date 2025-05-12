@@ -49,26 +49,21 @@ export class Card extends Component<IProductItem> {
          this.setText(this._button, value);
      }
 
-    render(data: IProductItem & { buttonText?: string }): HTMLElement {
+     render(data: IProductItem & { buttonText?: string, inBasket?: boolean }): HTMLElement {
         super.render(data);
         
         this.setText(this._title, data.title);
         this.setImage(this._image, data.image, data.title);
-        this.setText(this._category, data.category);
-
-        if (data.price !== null && data.price !== undefined) {
-            this.setText(this._price, `${formatNumber(data.price)} синапсов`);
+        
+        if (data.price !== null) {
+            this.setText(this._price, `${data.price} синапсов`);
         } else {
             this.setText(this._price, 'Бесценно');
-        }  
-
-        if (this._description) {
-            this.setText(this._description, data.description);
-            this.setVisible(this._description); 
         }
 
         if (this._button) {
-            this.setText(this._button, data.buttonText)
+            this.setText(this._button, data.buttonText || '');
+            this.setDisabled(this._button, data.price === null);
         }
         
         return this.container;

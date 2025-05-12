@@ -4,7 +4,7 @@ import { IEvents } from './../base/events';
 
 // Реализиация интерфейса.
 interface IPage {
-    counter: number;
+    _counter: number;
     catalog: HTMLElement[];
     locked: boolean;   
 }
@@ -33,7 +33,7 @@ export class Page extends Component<IPage> {
     set counter(value: number) {
         this.setText(this._counter, String(value));
     }
-    
+
      // Замена элементов в катологе товаров.
     set catalog(items: HTMLElement[]) {
         this._catalog.replaceChildren(...items);
