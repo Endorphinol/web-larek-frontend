@@ -16,6 +16,8 @@ export class Form<T> extends Component<IFormState> {
 
         this._submit = ensureElement<HTMLButtonElement>('button[type=submit]', this.container);
         this._errors = ensureElement<HTMLElement>('.form__errors', this.container);
+        this.valid = false;
+        this.errors = '';
 
         this.container.addEventListener('input', (event: Event) => {
             const target = event.target as HTMLInputElement;
@@ -50,6 +52,5 @@ export class Form<T> extends Component<IFormState> {
         super.render({valid, errors});
         Object.assign(this, inputs);
         return this.container;
-
     }
 }

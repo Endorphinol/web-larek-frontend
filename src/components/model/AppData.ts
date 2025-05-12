@@ -23,16 +23,19 @@ export class AppState extends Model {
     formErrors: FormErrors = {};
 
 
-    // clearBasket() {
-    //     this.order.items.forEach(id => {
-    //         this.toggleOrderedLot(id, false);
-    //         this.catalog.find(it => it.id === id).clearBid();
-    //     });
-    // }
+    clearBasket() {
+        this.basket = [];
+        this.order.items = [];
+        this.order.total = 0;
+        this.events.emit('basket:cleared');
+    }
 
-    // getTotal() {
-    //     return this.order.items.reduce((a, c) => a + this.catalog.find(it => it.id === c).price, 0)
-    // }
+    getTotal() {
+        return this.basket.reduce((total, id) => {
+            const item = this.catalog.find(it => it.id === id);
+            return total + (item?.price || 0);
+        }, 0);
+    }
 
     setCatalog(items: IProductItem[]) {
         this.catalog = items; 

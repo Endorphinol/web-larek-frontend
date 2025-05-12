@@ -2,13 +2,13 @@ import { ensureElement } from "../../utils/utils";
 import { Component } from "../base/Component";
 import { IEvents } from './../base/events';
 
-
+// Реализиация интерфейса.
 interface IPage {
     counter: number;
     catalog: HTMLElement[];
     locked: boolean;
 }
-
+// Инициализация класса.
 export class Page extends Component<IPage> {
     protected _counter: HTMLElement;
     protected _catalog: HTMLElement;
@@ -25,18 +25,20 @@ export class Page extends Component<IPage> {
         this._basket = ensureElement<HTMLButtonElement>('.header__basket');
 
         this._basket.addEventListener('click', () => {
-            this.events.emit('bids:open');
+            this.events.emit('basket:open');
         });
     }
-
+    // Cчетчик товаров.
     set counter(value: number) {
+        if (typeof value !== 'number') return;
         this.setText(this._counter, String(value));
     }
-
+     // Отображение католога товаров.
     set catalog(items: HTMLElement[]) {
         this._catalog.replaceChildren(...items);
+        this.events.emit('catalog:updated');
     }
-
+     // Блокировка прокрутки страницы.
     set locked(value: boolean) {
         if (value) {
             this._wrapper.classList.add('page__wrapper_locked');

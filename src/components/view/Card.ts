@@ -12,8 +12,9 @@ export class Card extends Component<IProductItem> {
     protected _category: HTMLElement;
     protected _price: HTMLElement;
     protected _button?: HTMLButtonElement;
-    protected _description?: HTMLElement
-    
+    protected _description?: HTMLElement;
+    protected inBasket?: boolean;
+
     constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions) {
         super(container);
 
@@ -32,34 +33,37 @@ export class Card extends Component<IProductItem> {
         }
     }
 
-    set category(value: string) {
-        this.setText(this._category, value);
-    }
-
-    set price(value: string) {
-        this.setText(this._price, value);
-    }
-
-    set description(value: string) {
-        if (this._description) {
-            this.setText(this._description, value);
+    private toggleButtonState(inBasket?: boolean) {
+        if (this._button && inBasket !== undefined) {
+            this._button.textContent = inBasket ? 'Убрать' : 'Купить';
         }
+    }
+
+    toggleButton(state: boolean) {
+        if (this._button) {
+            this.setDisabled(this._button, state);
+        }
+    }
+
+    set id(value: string) {
+        this.container.dataset.id = value;
     }
 
     render(data: IProductItem & { buttonText?: string }): HTMLElement {
-        super.render(data); 
+        super.render(data);
+        
         this.setText(this._title, data.title);
         this.setImage(this._image, data.image, data.title);
-        this.category = data.category;
-        this.price = data.price !== null ? `${data.price} синапсов` : 'Бесценно';
+        this.setText(this._category, data.category);
+        this.setText(this._price, data.price !== null ? `${data.price} синапсов` : 'Бесценно');
         
-        if (this._description && data.description) {
-            this.description = data.description;
+        if (this._description) {
+            this.setText(this._description, data.description || '');
+            this.setVisible(this._description); 
         }
 
-        if (this._button && data.buttonText) {
-            this.setText(this._button, data.buttonText);
-            this._button.disabled = data.price === null;
+        if (this._button) {
+            this.setText(this._button, data.buttonText || '')
         }
         
         return this.container;
