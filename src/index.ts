@@ -1,18 +1,19 @@
 import './scss/styles.scss';
-import { EventEmitter } from './components/base/events';
-import { LarekAPI } from './components/model/LarekApi';
-import { API_URL, CDN_URL } from './utils/constants';
-import { AppState } from './components/model/AppData';
-import { cloneTemplate, ensureElement } from './utils/utils';
-import { Page } from './components/view/Page';
-import { Modal } from './components/view/Modal';
-import { Basket } from './components/view/Basket';
-import { Card } from './components/view/Card';
-import { Order } from './components/view/Order';
-import { Success } from './components/view/Success';
-import { IProductItem } from './types';
 
-// Инициализация основных компонентов
+import { EventEmitter } from './components/base/events';
+import { API_URL, CDN_URL } from './utils/constants';
+import { cloneTemplate, ensureElement } from './utils/utils';
+import { IProductItem } from './types';
+import { LarekAPI } from './components/model/LarekApi';
+import { Success } from './components/view/Success';
+import { Order } from './components/view/Order';
+import { Card } from './components/view/Card';
+import { Basket } from './components/view/Basket';
+import { Modal } from './components/view/Modal';
+import { Page } from './components/view/Page';
+import { AppState } from './components/model/AppData';
+
+// Инициализация основных объектов
 const events = new EventEmitter();
 const api = new LarekAPI(CDN_URL, API_URL);
 const appData = new AppState(events);
@@ -21,63 +22,65 @@ const appData = new AppState(events);
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
-const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
 const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 
-// Глобальные компоненты
+// Компоненты
 const page = new Page(document.body, events);
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const basket = new Basket(cloneTemplate(basketTemplate), events);
 const order = new Order(cloneTemplate(orderTemplate), events);
 
-// Отображение каталога товаров
+// Загрузка товаров
+api.getItems()
+    .then(items => {
+        appData.setCatalog(items);
+        page.counter = appData.getTotal();
+    })
+    .catch(err => {
+        console.error('Ошибка загрузки товаров:', err);
+    });
+
+// Обработчики событий
+
+// Обновление каталога
 events.on('items:changed', () => {
     page.catalog = appData.catalog.map(item => {
         const card = new Card('card', cloneTemplate(cardCatalogTemplate), {
             onClick: () => events.emit('card:select', item)
         });
         return card.render({
-            ...item,
-            buttonText: 'В корзину'
+            title: item.title,
+            image: item.image,
+            price: item.price,
+            category: item.category,
+            id: item.id,
         });
     });
 });
 
-// Просмотр карточки товара
+// Выбор товара
 events.on('card:select', (item: IProductItem) => {
-    const card = new Card('card', cloneTemplate(cardPreviewTemplate), {
-        onClick: () => {
-            events.emit('basket:add', item);
-            card.buttonText = appData.basket.includes(item.id) ? 'Убрать' : 'В корзину';
-        }
-    });
-    
+    appData.setPreview(item);
+    const card = new Card('card', cloneTemplate(cardPreviewTemplate));
     modal.render({
         content: card.render({
-            ...item,
-            buttonText: appData.basket.includes(item.id) ? 'Убрать' : 'В корзину'
+            title: item.title,
+            image: item.image,
+            price: item.price,
+            category: item.category,
+            id: item.id,
         })
     });
 });
 
 // Работа с корзиной
-events.on('basket:add', (item: IProductItem) => {
-    appData.addToBasket(item);
+events.on('basket:changed', () => {
     page.counter = appData.basket.length;
-});
-
-events.on('basket:remove', (item: IProductItem) => {
-    appData.removeFromBasket(item.id);
-    page.counter = appData.basket.length;
-    basket.total = appData.getTotal();
-});
-
-events.on('basket:open', () => {
     basket.items = appData.basket.map(id => {
         const item = appData.catalog.find(it => it.id === id);
-        const card = new Card('card', cloneTemplate(cardBasketTemplate), {
-            onClick: () => events.emit('basket:remove', item)
+        const card = new Card('card', cloneTemplate(basketTemplate), {
+            onClick: () => events.emit('basket:remove')
         });
         return card.render({
             ...item,
@@ -85,47 +88,28 @@ events.on('basket:open', () => {
         });
     });
     basket.total = appData.getTotal();
-    modal.render({
-        content: basket.render()
-    });
 });
 
 // Оформление заказа
-events.on('order:open', () => {
-    modal.render({
-        content: order.render({
-            address: '',
-            valid: false,
-            errors: []
-        })
-    });
-});
-
-// Отправка заказа.
 events.on('order:submit', () => {
     api.orderItems(appData.order)
         .then(() => {
             const success = new Success(cloneTemplate(successTemplate), {
-                onClick: () => modal.close()
+                onClick: () => {
+                    modal.close();
+                    appData.clearBasket();
+                }
             });
             success.total = appData.getTotal();
             modal.render({
                 content: success.render({})
             });
-            appData.clearBasket();
-            page.counter = 0;
         })
         .catch(err => {
-            console.error(err);
+            console.error('Ошибка оформления заказа:', err);
         });
 });
 
-// Загрузка товаров с сервера.
-api.getItems()
-    .then(data => {
-        appData.setCatalog(data);
-        page.counter = appData.basket.length;
-    })
-    .catch(err => {
-        console.error(err);
-    });
+// Блокировка прокрутки
+events.on('modal:open', () => page.locked = true);
+events.on('modal:close', () => page.locked = false);
