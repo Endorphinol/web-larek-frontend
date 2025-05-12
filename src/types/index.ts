@@ -22,7 +22,7 @@ export interface IOrder {
 }
 
 export interface IBasketItem {
-    index: any;
+    index: number;
     title: string;
     price: number;
 }
