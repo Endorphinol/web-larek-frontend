@@ -50,11 +50,9 @@ events.on('items:changed', () => {
             onClick: () => events.emit('card:select', item)
         });
         return card.render({
-            title: item.title,
-            image: item.image,
+            ...item,
             price: item.price,
-            category: item.category,
-            id: item.id,
+            buttonText: 'В корзину'
         });
     });
 });
@@ -65,11 +63,9 @@ events.on('card:select', (item: IProductItem) => {
     const card = new Card('card', cloneTemplate(cardPreviewTemplate));
     modal.render({
         content: card.render({
-            title: item.title,
-            image: item.image,
+            ...item,
             price: item.price,
-            category: item.category,
-            id: item.id,
+            buttonText: appData.basket.includes(item.id) ? 'Убрать' : 'В корзину',
         })
     });
 });
@@ -84,7 +80,8 @@ events.on('basket:changed', () => {
         });
         return card.render({
             ...item,
-            buttonText: 'Убрать'
+            price: item.price,
+            buttonText: 'Убрать',
         });
     });
     basket.total = appData.getTotal();

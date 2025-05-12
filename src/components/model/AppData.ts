@@ -8,7 +8,7 @@ export type CatalogChangeEvent = {
 };
 
 export class AppState extends Model {
-    basket: string[];
+    basket: string[] = [];
     catalog: IProductItem[];
     loading: boolean;
     order: IOrder = {
@@ -32,8 +32,8 @@ export class AppState extends Model {
 
     getTotal() {
         return this.basket.reduce((total, id) => {
-            const item = this.catalog.find(it => it.id === id);
-            return total + (item?.price || 0);
+            const item = this.catalog.find(item => item.id === id);
+            return total + (item.price || 0);
         }, 0);
     }
 
@@ -41,7 +41,6 @@ export class AppState extends Model {
         this.catalog = items; 
         this.events.emit('items:changed', { catalog: this.catalog });
     }
-
 
     setPreview(item: IProductItem) {
         this.preview = item.id;

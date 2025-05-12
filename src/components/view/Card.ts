@@ -1,5 +1,5 @@
 import { Component } from "../base/Component";
-import { ensureElement } from "../../utils/utils";
+import { ensureElement, formatNumber } from "../../utils/utils";
 import { IProductItem } from "../../types";
 
 interface ICardActions {
@@ -55,8 +55,11 @@ export class Card extends Component<IProductItem> {
         this.setText(this._title, data.title);
         this.setImage(this._image, data.image, data.title);
         this.setText(this._category, data.category);
-        this.setText(this._price, data.price !== null ? `${data.price} синапсов` : 'Бесценно');
-        
+        if (data.price !== null && data.price !== undefined) {
+            this.setText(this._price, `${formatNumber(data.price)} синапсов`);
+        } else {
+            this.setText(this._price, 'Бесценно');
+        }        
         if (this._description) {
             this.setText(this._description, data.description || '');
             this.setVisible(this._description); 
