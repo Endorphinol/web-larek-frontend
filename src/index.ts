@@ -206,3 +206,8 @@ events.on('order:open', () => {
         })
     });
 });
+
+// Обновление счетчика.
+events.on('counter:updated', (count: number) => {
+    page.counter = count;
+});

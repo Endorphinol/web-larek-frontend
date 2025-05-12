@@ -8,6 +8,7 @@ interface IBasketView {
     total: number;
     selected: string[];
     buttonText?: string;
+    counter?: number;
 }
 // Создание класса корзины.
 export class Basket extends Component<IBasketView> {
@@ -18,6 +19,7 @@ export class Basket extends Component<IBasketView> {
 
     constructor(container: HTMLTemplateElement, protected events: EventEmitter) {
         super(container);
+
         this._list = ensureElement<HTMLElement>('.basket__list', this.container);
         this._price = ensureElement<HTMLElement>('.basket__price', container);
         this._button = ensureElement<HTMLButtonElement>('.basket__button', container);
@@ -29,24 +31,22 @@ export class Basket extends Component<IBasketView> {
         }
         this.items = [];
     }
+
     // Поместить товар в корзину.
     set items(items: HTMLElement[]) {
         this._list.replaceChildren(...items);
         this._button.disabled = items.length === 0;
     }
 
-    set selected(items: string[]) {
-        if (items.length) {
-            this.setDisabled(this._button, false);
-        } else {
-            this.setDisabled(this._button, true);
-        }
+     set selected(items: string[]) {
+        this.setDisabled(this._button, items.length === 0);
     }
+
     // Подсчитать общую стоимость.
     set total(total: number) {
         this.setText(this._total, `${formatNumber(total)} синапсов`);
     }
-
+    
     // Установка текста на кнопку.
     set buttonText(value: string) {
         this.setText(this._button, value);

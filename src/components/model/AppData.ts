@@ -1,6 +1,5 @@
 import { FormErrors, IOrder, IProductItem } from './../../types/index';;
 import { Model } from "./Model";
-import { Card } from '../view/Card';
 import { IOrderForm } from '../view/Order';
 
 export type CatalogChangeEvent = {
@@ -38,11 +37,19 @@ export class AppState extends Model {
         if (!this.basket.includes(item.id)) {
             this.basket.push(item.id);
             this.events.emit('basket:changed');
+            this.emitBasketUpdate();
         }
-    }
+    };
+
     removeFromBasket(id: string) {
         this.basket = this.basket.filter(item => item !== id);
         this.events.emit('basket:changed');
+        this.emitBasketUpdate();
+    }
+
+    private emitBasketUpdate() {
+        this.events.emit('basket:changed');
+        this.events.emit('counter:updated', this.basket.length);
     }
     
     clearBasket() {
@@ -64,13 +71,26 @@ export class AppState extends Model {
     }
 
     validateOrder() {
-        const errors: typeof this.formErrors = {};
+        const errors: FormErrors = {};
+        
+        if (!this.order.payment) {
+            errors.payment = 'Выберите способ оплаты';
+        }
+        
+        if (!this.order.address) {
+            errors.address = 'Введите адрес доставки';
+        }
+        
         if (!this.order.email) {
-            errors.email = 'Необходимо указать email';
+            errors.email = 'Введите email';
+        } else if (!this.order.email.includes('@')) {
+            errors.email = 'Некорректный email';
         }
+        
         if (!this.order.phone) {
-            errors.phone = 'Необходимо указать телефон';
+            errors.phone = 'Введите телефон';
         }
+    
         this.formErrors = errors;
         this.events.emit('formErrors:change', this.formErrors);
         return Object.keys(errors).length === 0;

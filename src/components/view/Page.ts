@@ -6,8 +6,9 @@ import { IEvents } from './../base/events';
 interface IPage {
     counter: number;
     catalog: HTMLElement[];
-    locked: boolean;
+    locked: boolean;   
 }
+
 // Инициализация класса.
 export class Page extends Component<IPage> {
     protected _counter: HTMLElement;
@@ -30,9 +31,9 @@ export class Page extends Component<IPage> {
     }
     // Cчетчик товаров.
     set counter(value: number) {
-        if (typeof value !== 'number') return;
         this.setText(this._counter, String(value));
     }
+    
      // Замена элементов в катологе товаров.
     set catalog(items: HTMLElement[]) {
         this._catalog.replaceChildren(...items);
