@@ -3,7 +3,7 @@ import './scss/styles.scss';
 import { EventEmitter } from './components/base/events';
 import { API_URL, CDN_URL } from './utils/constants';
 import { cloneTemplate, ensureElement } from './utils/utils';
-import { IProductItem } from './types';
+import { FormErrors, IContactsForm, IOrder, IOrderForm, IProductItem } from './types';
 import { LarekAPI } from './components/model/LarekApi';
 import { Success } from './components/view/Success';
 import { Order } from './components/view/Order';
@@ -204,8 +204,32 @@ events.on('order:open', () => {
         content: order.render({
             payment: '',
             address: '',
-            valid: false,
-            errors: []
         })
     });
 });
+
+// Изменение способа оплаты
+events.on('order.payment:change', (data: { field: keyof IOrderForm, value: string }) => {
+    appData.setOrderField(data.field, data.value);
+});
+  
+  // Изменение адреса
+  events.on('order.address:change', (data: { field: keyof IOrderForm, value: string }) => {
+    appData.setOrderField(data.field, data.value);
+});
+// Изменение email
+events.on('contacts.email:change', (data: { field: keyof IContactsForm, value: string }) => {
+    appData.setOrderField(data.field as 'email' | 'phone', data.value);
+});
+
+// Изменение телефона
+events.on('contacts.phone:change', (data: { field: keyof IContactsForm, value: string }) => {
+    appData.setOrderField(data.field as 'email' | 'phone', data.value);
+});
+  
+  // Обновление состояния формы
+  events.on('formErrors:change', (errors: FormErrors) => {
+    const messages = Object.values(errors).filter(Boolean).join('; ');
+    order.errors = messages;
+    order.valid = !messages;
+  });

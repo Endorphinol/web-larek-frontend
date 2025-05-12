@@ -6,6 +6,7 @@ import { IProductItem } from "../../types";
 interface ICardActions {
     onClick: (event: MouseEvent) => void;
 }
+
 // Создание класса элемент карточки.
 export class Card extends Component<IProductItem> {
     protected _title: HTMLElement;

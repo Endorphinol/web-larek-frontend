@@ -11,7 +11,7 @@ export interface IProductItem {
 	category: string;
 	price: number | null;
 }
-
+// Основной интерфейс заказа.
 export interface IOrder {
     payment: string;
     address: string;
@@ -19,6 +19,18 @@ export interface IOrder {
     phone: string;
     items: string[];
     total: number;
+}
+
+// Интерфейс для формы заказа (первый шаг).
+export interface IOrderForm {
+    payment: string;
+    address: string;
+}
+
+// Интерфейс для формы контактов (второй шаг).
+export interface IContactsForm {
+    email: string;
+    phone: string;
 }
 
 export interface IBasketItem {

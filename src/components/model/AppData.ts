@@ -1,99 +1,93 @@
-import { FormErrors, IOrder, IProductItem } from './../../types/index';;
-import { Model } from "./Model";
-import { IOrderForm } from '../view/Order';
+import { FormErrors, IContactsForm, IOrder, IOrderForm, IProductItem } from './../../types/index';
+import { Model } from './Model';
 
 export type CatalogChangeEvent = {
-    catalog: IProductItem[]
+	catalog: IProductItem[];
 };
-
 export class AppState extends Model {
-    basket: string[] = [];
-    catalog: IProductItem[];
-    loading: boolean;
-    order: IOrder = {
-        email: '',
-        phone: '',
-        items: [],
-        payment: '',
-        address: '',
-        total: 0
-    };
-    
-    preview: string | null;
-    formErrors: FormErrors = {};
+	basket: string[] = [];
+	catalog: IProductItem[];
+	loading: boolean;
+	order: IOrder = {
+		email: '',
+		phone: '',
+		items: [],
+		payment: '',
+		address: '',
+		total: 0,
+	};
 
-    getTotal() {
-        return this.basket.reduce((total, id) => {
-            const item = this.catalog.find(item => item.id === id);
-            return total + (item?.price || 0);
-        }, 0);
-    }
+	preview: string | null;
+	formErrors: FormErrors = {};
 
-    setCatalog(items: IProductItem[]) {
-        this.catalog = items; 
-        this.events.emit('items:changed', { catalog: this.catalog });
-    }
-// Добавить товар в корзину.
-    addToBasket(item: IProductItem) {
-        if (!this.basket.includes(item.id)) {
-            this.basket.push(item.id);
-            this.updateBasket();
-        }
-    };
+	getTotal() {
+		return this.basket.reduce((total, id) => {
+			const item = this.catalog.find((item) => item.id === id);
+			return total + (item?.price || 0);
+		}, 0);
+	}
 
-    // Обновление корзины.
-    private updateBasket() {
-        this.events.emit('basket:changed');
-        this.events.emit('counter:updated', { basket: this.basket.length });
-    };
+	setCatalog(items: IProductItem[]) {
+		this.catalog = items;
+		this.events.emit('items:changed', { catalog: this.catalog });
+	}
 
-// Удалить товар с корзины.
-    removeFromBasket(id: string) {
-        this.basket = this.basket.filter(item => item !== id);
-        this.updateBasket();
-    };
+	// Добавить товар в корзину.
+	addToBasket(item: IProductItem) {
+		if (!this.basket.includes(item.id)) {
+			this.basket.push(item.id);
+			this.updateBasket();
+		}
+	}
 
-    // Очистить корзину.
-    clearBasket() {
-        this.basket = [];
-        this.updateBasket();
-    };
+	// Обновление корзины.
+	private updateBasket() {
+		this.events.emit('basket:changed');
+		this.events.emit('counter:updated', { basket: this.basket.length });
+	}
 
-    setPreview(item: IProductItem) {
-        this.preview = item.id;
-        this.events.emit('preview:changed', item);
-    };
+	// Удалить товар с корзины.
+	removeFromBasket(id: string) {
+		this.basket = this.basket.filter((item) => item !== id);
+		this.updateBasket();
+	}
 
-    setOrderField(field: keyof IOrderForm, value: string) {
+	// Очистить корзину.
+	clearBasket() {
+		this.basket = [];
+		this.updateBasket();
+	}
+
+	setPreview(item: IProductItem) {
+		this.preview = item.id;
+		this.events.emit('preview:changed', item);
+	}
+
+setOrderField(field: keyof IOrderForm | keyof IContactsForm, value: string) {
+    if (field === 'payment' || field === 'address') {
         this.order[field] = value;
-        if (this.validateOrder()) {
-            this.events.emit('order:ready', this.order);
-        }
-    };
-
-    // Валидация заказа.
-    validateOrder() {
-        const errors: FormErrors = {};
-        if (!this.order.payment) {
-            errors.payment = 'Выберите способ оплаты';
-        }
-        
-        if (!this.order.address) {
-            errors.address = 'Введите адрес доставки';
-        }
-        
-        if (!this.order.email) {
-            errors.email = 'Введите email';
-        } else if (!this.order.email.includes('@')) {
-            errors.email = 'Некорректный email';
-        }
-        
-        if (!this.order.phone) {
-            errors.phone = 'Введите телефон';
-        }
-    
-        this.formErrors = errors;
-        this.events.emit('formErrors:change', this.formErrors);
-        return Object.keys(errors).length === 0;
+    } else if (field === 'email' || field === 'phone') {
+        this.order[field] = value;
     }
+    this.validateOrder();
+}
+
+	// Валидация заказа.
+	validateOrder() {
+		const errors: FormErrors = {};
+
+		if (!this.order.payment) {
+			errors.payment = 'Выберите способ оплаты';
+		}
+
+		if (!this.order.address) {
+			errors.address = 'Введите адрес доставки';
+		}
+
+		this.formErrors = errors;
+		this.events.emit('formErrors:change', this.formErrors);
+		this.events.emit('order:ready', this.order);
+
+		return Object.keys(errors).length === 0;
+	}
 }
