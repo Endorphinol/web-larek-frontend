@@ -71,3 +71,14 @@ export interface INoAddress {
 
 export type FormErrors = Partial<Record<keyof IOrder, string>>;
 
+export interface IOrderForm {
+	address: string;
+	payment: string;
+	email: string;
+	phone: string;
+  }
+  
+  export interface IModalData {
+	title: string;
+	content: HTMLElement;
+  }
