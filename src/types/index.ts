@@ -4,7 +4,7 @@ export interface IProductList {
 
 export interface IProductItem {
 	index?: number;
-	id: string;
+	id?: string;
 	description?: string;
 	image: string;
 	title: string;

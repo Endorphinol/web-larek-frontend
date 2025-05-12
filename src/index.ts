@@ -54,7 +54,7 @@ events.on('items:changed', () => {
             image: item.image,
             price: item.price,
             category: item.category,
-            id: ''
+            description: item.description
         });
     });
 });
@@ -78,6 +78,7 @@ events.on('card:select', (item: IProductItem) => {
 
 // Работа с элеметом корзины корзиной
 events.on('basket:changed', () => {
+    page.counter = appData.basket.length; 
     basket.items = appData.basket.map((id, index) => {
         const item = appData.catalog.find(item => item.id === id);
         const basketItem = new BasketItem(cloneTemplate(cardBasketItemTemplate), {
@@ -207,9 +208,4 @@ events.on('order:open', () => {
             errors: []
         })
     });
-});
-
-// Обновление счетчика.
-events.on('counter:updated', (event: { count: number }) => {
-    page.counter = event.count;
 });

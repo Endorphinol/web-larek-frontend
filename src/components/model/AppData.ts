@@ -32,24 +32,24 @@ export class AppState extends Model {
         this.catalog = items; 
         this.events.emit('items:changed', { catalog: this.catalog });
     }
-
+// Добавить товар в корзину.
     addToBasket(item: IProductItem) {
         if (!this.basket.includes(item.id)) {
             this.basket.push(item.id);
             this.updateBasket();
         }
     }
-
+    // Обновление корзины.
     private updateBasket() {
         this.events.emit('basket:changed');
         this.events.emit('counter:updated', { basket: this.basket.length });
     }
-
+// Удалить товар с корзины.
     removeFromBasket(id: string) {
         this.basket = this.basket.filter(item => item !== id);
         this.updateBasket();
     }
-    
+    // Очистить корзину.
     clearBasket() {
         this.basket = [];
         this.updateBasket();
@@ -68,9 +68,9 @@ export class AppState extends Model {
         }
     }
 
+    // Валидация заказа.
     validateOrder() {
         const errors: FormErrors = {};
-        
         if (!this.order.payment) {
             errors.payment = 'Выберите способ оплаты';
         }

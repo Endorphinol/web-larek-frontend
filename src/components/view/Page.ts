@@ -5,8 +5,8 @@ import { IEvents } from './../base/events';
 // Реализиация интерфейса.
 interface IPage {
     _counter: number;
-    catalog: HTMLElement[];
-    locked: boolean;   
+    _catalog: HTMLElement[];
+    _locked: boolean;   
 }
 
 // Инициализация класса.

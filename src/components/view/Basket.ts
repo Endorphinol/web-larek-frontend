@@ -8,7 +8,6 @@ interface IBasketView {
     total: number;
     selected: string[];
     buttonText?: string;
-    counter?: number;
 }
 // Создание класса корзины.
 export class Basket extends Component<IBasketView> {
