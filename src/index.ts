@@ -59,15 +59,17 @@ events.on('items:changed', () => {
 
 // Выбор товара
 events.on('card:select', (item: IProductItem) => {
-    appData.setPreview(item);
     const card = new Card('card', cloneTemplate(cardPreviewTemplate), {
-        onClick: () => events.emit('basket:toggle', item) 
+        onClick: () => {
+            events.emit('basket:toggle', item);
+            card.buttonText = appData.basket.includes(item.id) ? 'Убрать' : 'В корзину';
+        }
     });
+
     modal.render({
         content: card.render({
             ...item,
-            price: item.price,
-            buttonText: appData.basket.includes(item.id) ? 'Убрать' : 'В корзину',
+            buttonText: appData.basket.includes(item.id) ? 'Убрать' : 'В корзину'
         })
     });
 });
@@ -190,5 +192,17 @@ events.on('basket:open', () => {
     basket.total = appData.getTotal();
     modal.render({
         content: basket.render()
+    });
+});
+
+// Форма заказа. 
+events.on('order:open', () => {
+    modal.render({
+        content: order.render({
+            payment: '',
+            address: '',
+            valid: false,
+            errors: []
+        })
     });
 });

@@ -44,6 +44,11 @@ export class Card extends Component<IProductItem> {
         this.container.dataset.id = value;
     }
 
+    // Установка текста на кнопку.
+    set buttonText(value: string) {
+         this.setText(this._button, value);
+     }
+
     render(data: IProductItem & { buttonText?: string }): HTMLElement {
         super.render(data);
         
