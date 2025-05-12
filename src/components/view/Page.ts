@@ -15,7 +15,7 @@ export class Page extends Component<IPage> {
     protected _wrapper: HTMLElement;
     protected _basket: HTMLButtonElement;
 
-
+// Инициализация всех элементов в классе.
     constructor(container: HTMLElement, protected events: IEvents) {
         super(container);
 
@@ -33,7 +33,7 @@ export class Page extends Component<IPage> {
         if (typeof value !== 'number') return;
         this.setText(this._counter, String(value));
     }
-     // Отображение католога товаров.
+     // Замена элементов в катологе товаров.
     set catalog(items: HTMLElement[]) {
         this._catalog.replaceChildren(...items);
         this.events.emit('catalog:updated');

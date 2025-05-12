@@ -2,11 +2,13 @@ import { IEvents } from './../base/events';
 import {Component} from "../base/Component";
 import {ensureElement} from "../../utils/utils";
 
+// Реализиация интерфейса.
 interface IFormState {
     valid: boolean;
     errors: string[];
 }
 
+// Инициализация класса.
 export class Form<T> extends Component<IFormState> {
     protected _submit: HTMLButtonElement;
     protected _errors: HTMLElement;
@@ -47,6 +49,7 @@ export class Form<T> extends Component<IFormState> {
         this.setText(this._errors, value);
     }
 
+    // Отрисовка формы.
     render(state: Partial<T> & IFormState) {
         const {valid, errors, ...inputs} = state;
         super.render({valid, errors});

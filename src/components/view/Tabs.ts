@@ -1,13 +1,17 @@
 import { Component } from "../base/Component";
 import { ensureAllElements } from "../../utils/utils";
 
+// Реализиация именованного типа.
 export type TabState = {
     selected: string
 };
+
+// Реализиация именованного типа.
 export type TabActions = {
     onClick: (tab: string) => void
-}
+};
 
+// Инициализация класса.
 export class Tabs extends Component<TabState> {
     protected _buttons: HTMLButtonElement[];
 
