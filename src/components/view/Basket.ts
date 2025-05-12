@@ -14,13 +14,12 @@ export class Basket extends Component<IBasketView> {
     protected _total: HTMLElement;
     protected _button: HTMLElement;
 
-    constructor(container: HTMLElement, protected events: EventEmitter) {
+    constructor(container: HTMLTemplateElement, protected events: EventEmitter) {
         super(container);
 
         this._list = ensureElement<HTMLElement>('.basket__list', this.container);
-        this._total = ensureElement<HTMLElement>('.basket__total', this.container);
-        this._button = ensureElement<HTMLElement>('.basket__action', this.container);
-
+        this._total = container.querySelector('.basket__total');
+        this._total = container.querySelector('.basket__action');
         if (this._button) {
             this._button.addEventListener('click', () => {
                 events.emit('order:open');

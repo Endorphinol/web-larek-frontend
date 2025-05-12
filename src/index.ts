@@ -110,6 +110,26 @@ events.on('order:submit', () => {
         });
 });
 
-// Блокировка прокрутки
-events.on('modal:open', () => page.locked = true);
-events.on('modal:close', () => page.locked = false);
+// Блокировка прокрутки при открытии модального окна
+events.on('modal:open', () => {
+    page.locked = true;
+});
+
+// Разблокировка прокрутки при закрытии
+events.on('modal:close', () => {
+    page.locked = false;
+});
+
+// Обработка успешного оформления заказа
+events.on('order:success', () => {
+    const success = new Success(cloneTemplate(successTemplate), {
+        onClick: () => {
+            modal.close();
+            appData.clearBasket();
+            events.emit('basket:changed');
+        }
+    });
+    modal.render({
+        content: success.render({})
+    });
+});
