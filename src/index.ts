@@ -12,6 +12,7 @@ import { Basket } from './components/view/Basket';
 import { Modal } from './components/view/Modal';
 import { Page } from './components/view/Page';
 import { AppState } from './components/model/AppData';
+import { BasketItem } from './components/view/BasketItem';
 
 // Инициализация основных объектов
 const events = new EventEmitter();
@@ -166,5 +167,28 @@ events.on('order:success', () => {
     });
     modal.render({
         content: success.render({})
+    });
+});
+
+// Добавление и удаление товара из корзины.
+events.on('basket:open', () => {
+    basket.items = appData.basket.map((id, index) => {
+        const item = appData.catalog.find(item => item.id === id);
+        if (!item) return document.createElement('div');
+        
+        const basketItem = new BasketItem(cloneTemplate(cardBasketTemplate), {
+            onClick: () => events.emit('basket:remove', { id })
+        });
+        
+        return basketItem.render({
+            index: index + 1,
+            title: item.title,
+            price: item.price
+        });
+    });
+    
+    basket.total = appData.getTotal();
+    modal.render({
+        content: basket.render()
     });
 });
