@@ -74,18 +74,17 @@ events.on('card:select', (item: IProductItem) => {
     });
 });
 
-// Работа с корзиной
+// Работа с элеметом корзины корзиной
 events.on('basket:changed', () => {
-    page.counter = appData.basket.length;
-    basket.items = appData.basket.map(id => {
-        const item = appData.catalog.find(it => it.id === id);
-        const card = new Card('card', cloneTemplate(cardBasketTemplate), {
-            onClick: () => events.emit('basket:remove')
+    basket.items = appData.basket.map((id, index) => {
+        const item = appData.catalog.find(item => item.id === id);
+        const basketItem = new BasketItem(cloneTemplate(cardBasketItemTemplate), {
+            onClick: () => events.emit('basket:remove', { id })
         });
-        return card.render({
-            ...item,
-            price: item.price,
-            buttonText: 'Убрать',
+        return basketItem.render({
+            index: index + 1,
+            title: item.title,
+            price: item.price
         });
     });
     basket.total = appData.getTotal();
@@ -185,7 +184,8 @@ events.on('basket:open', () => {
         
         return basketItem.render({
             title: item.title,
-            price: item.price
+            price: item.price,
+            index: item.index
         });
     });
     

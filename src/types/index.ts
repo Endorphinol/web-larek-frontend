@@ -3,6 +3,7 @@ export interface IProductList {
 }
 
 export interface IProductItem {
+	index?: number;
 	id: string;
 	description?: string;
 	image: string;
@@ -18,6 +19,16 @@ export interface IOrder {
     phone: string;
     items: string[];
     total: number;
+}
+
+export interface IBasketItem {
+    index: any;
+    title: string;
+    price: number;
+}
+
+export interface IBasketItemActions {
+    onClick: (event: MouseEvent) => void;
 }
 
 export interface IOrderResult {

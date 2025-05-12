@@ -1,15 +1,20 @@
 import { Component } from "../base/Component";
 import { ensureElement } from "../../utils/utils";
+import { IBasketItem, IBasketItemActions } from "../../types";
 
-export class BasketItem extends Component<BasketItem> {
+export class BasketItem extends Component<IBasketItem> {
+    protected _index: HTMLElement;
     protected _title: HTMLElement;
     protected _price: HTMLElement;
     protected _button: HTMLButtonElement;
 
-    constructor(container: HTMLElement, actions?: { onClick: () => void }) {
+
+    constructor(container: HTMLElement, actions?: IBasketItemActions) {
         super(container);
-        this._title = ensureElement<HTMLElement>('.basket__item-title', container);
-        this._price = ensureElement<HTMLElement>('.basket__item-price', container);
+
+        this._index = ensureElement<HTMLElement>('.basket__item-index', container);
+        this._title = ensureElement<HTMLElement>('.card__title', container);
+        this._price = ensureElement<HTMLElement>('.card__price', container);
         this._button = ensureElement<HTMLButtonElement>('.basket__item-delete', container);
         
         if (actions?.onClick) {
@@ -17,11 +22,11 @@ export class BasketItem extends Component<BasketItem> {
         }
     }
 
-    set title(value: string) {
-        this.setText(this._title, value);
+    render(item: IBasketItem): HTMLElement {
+        this.setText(this._index, item.index ? String(item.index) : '');
+        this.setText(this._title, item.title);
+        this.setText(this._price, `${item.price} синапсов`);
+        return this.container;
     }
 
-    set price(value: number) {
-        this.setText(this._price, `${value} синапсов`);
-    }
 }
