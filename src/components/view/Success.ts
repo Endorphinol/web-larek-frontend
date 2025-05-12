@@ -16,9 +16,9 @@ export class Success extends Component<ISuccess> {
     constructor(container: HTMLElement, actions: ISuccessActions) {
         super(container);
         // Поиск элементов.
-        this._title = ensureElement<HTMLElement>('.film__title', this.container),
+        this._title = ensureElement<HTMLElement>('.order-success__title', this.container),
         this._close = ensureElement<HTMLButtonElement>('.order-success__close', this.container),
-        this._description = ensureElement<HTMLElement>('.film__description', this.container);
+        this._description = ensureElement<HTMLElement>('.order-success__description', this.container);
         // Опциональная цепочка для поиска метода.
         if (actions?.onClick) {
             this._close.addEventListener('click', actions.onClick);
