@@ -23,6 +23,7 @@ const appData = new AppState(events);
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#basket');
+const cardBasketItemTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
 const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 
@@ -172,16 +173,15 @@ events.on('order:success', () => {
 
 // Добавление и удаление товара из корзины.
 events.on('basket:open', () => {
-    basket.items = appData.basket.map((id, index) => {
+    basket.items = appData.basket.map(id => {
         const item = appData.catalog.find(item => item.id === id);
         if (!item) return document.createElement('div');
         
-        const basketItem = new BasketItem(cloneTemplate(cardBasketTemplate), {
+        const basketItem = new BasketItem(cloneTemplate(cardBasketItemTemplate), {
             onClick: () => events.emit('basket:remove', { id })
         });
         
         return basketItem.render({
-            index: index + 1,
             title: item.title,
             price: item.price
         });
