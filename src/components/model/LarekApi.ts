@@ -1,13 +1,6 @@
-import { IOrder, IOrderResult, IProductItem } from '../../types/index';
+import { ILarekAPI, IOrder, IOrderResult, IProductItem } from '../../types/index';
 import { Api, ApiListResponse } from '../base/api';
 
-// Реалзиация интерфейса.
-export interface ILarekAPI {
-	getItems: () => Promise<IProductItem[]>;
-	orderItems: (order: IOrder) => Promise<IOrderResult>;
-}
-
-// Cоздание класса.
 export class LarekAPI extends Api implements ILarekAPI {
 	readonly cdn: string;
 
@@ -30,6 +23,7 @@ export class LarekAPI extends Api implements ILarekAPI {
 			}))
 		);
 	}
+    
 	/**
 	 * Отправляет заказ на сервер.
 	 * @returns Возвращает промис с результатом отправки заказа.

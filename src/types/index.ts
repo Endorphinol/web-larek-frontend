@@ -43,6 +43,10 @@ export interface IBasketItemActions {
 	onClick: (event: MouseEvent) => void;
 }
 
+export type CatalogChangeEvent = {
+	catalog: IProductItem[];
+};
+
 export interface IPage {
 	_counter: number;
 	_catalog: HTMLElement[];
@@ -79,6 +83,12 @@ export interface IWrongTotal {
 export interface INoAddress {
 	error: string;
 }
+
+export interface ILarekAPI {
+	getItems: () => Promise<IProductItem[]>;
+	orderItems: (order: IOrder) => Promise<IOrderResult>;
+}
+
 
 export type FormErrors = Partial<Record<keyof IOrder, string>>;
 

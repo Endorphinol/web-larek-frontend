@@ -19,7 +19,7 @@ export class Card extends Component<IProductItem> {
         this._category = container.querySelector(`.${blockName}__category`);
         this._price = container.querySelector(`.${blockName}__price`);
         this._button = container.querySelector(`.${blockName}__button`);
-        this._description = container.querySelector(`.${blockName}__description`);
+        this._description = container.querySelector(`.${blockName}__text`);
 
         if (actions?.onClick) {
             if (this._button) {
@@ -51,7 +51,11 @@ export class Card extends Component<IProductItem> {
         this.setText(this._title, data.title);
         this.setImage(this._image, data.image, data.title);
         this.setText(this._category, data.category);
-        
+
+        if (this._description && data.description) {
+            this.setText(this._description, data.description);
+        }
+
         if (data.price !== null) {
             this.setText(this._price, `${data.price} синапсов`);
         } else {

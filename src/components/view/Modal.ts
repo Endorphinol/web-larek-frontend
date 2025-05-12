@@ -35,8 +35,8 @@ export class Modal extends Component<IModalData> {
         this.events.emit('modal:close');
     }
 
-    handleEscape = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
+    handleEscape = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
             this.close();
         }
     };

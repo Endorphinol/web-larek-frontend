@@ -12,7 +12,6 @@ export class Contacts extends Component<IContactsForm> {
 	constructor(container: HTMLFormElement, protected events: EventEmitter) {
 		super(container);
 
-		this._validateForm();
 		this._emailInput = ensureElement<HTMLInputElement>(
 			'input[name="email"]',
 			container
@@ -27,6 +26,8 @@ export class Contacts extends Component<IContactsForm> {
 		);
 		this._errors = ensureElement<HTMLElement>('.form__errors', container);
 
+        this._validateForm();
+
 		// Слушатель события на форме ввода электронной почты.
 		this._emailInput.addEventListener('input', () => {
 			this._validateForm();
@@ -35,6 +36,7 @@ export class Contacts extends Component<IContactsForm> {
 				value: this._emailInput.value,
 			});
 		});
+
 		// Слушатель события на форме ввода телефона.
 		this._phoneInput.addEventListener('input', () => {
 			this._validateForm();
@@ -43,6 +45,7 @@ export class Contacts extends Component<IContactsForm> {
 				value: this._phoneInput.value,
 			});
 		});
+
 		// Прерывание отправки формы стандартым образом и передача данных.
 		this.container.addEventListener('submit', (event) => {
 			event.preventDefault();
@@ -53,6 +56,7 @@ export class Contacts extends Component<IContactsForm> {
 				});
 			}
 		});
+        
 	}
 
 	// Валидация формы и возврат булева значения.
@@ -63,11 +67,13 @@ export class Contacts extends Component<IContactsForm> {
 		this.setDisabled(this._submitButton, !(isEmailValid && isPhoneValid));
 		return isEmailValid && isPhoneValid;
 	}
+
 	// Валидация электронной почты.
 	private _validateEmail(email: string): boolean {
 		const reg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		return reg.test(email);
 	}
+
 	// Валидация телефона..
 	private _validatePhone(phone: string): boolean {
 		return phone.replace(/\D/g, '').length >= 11;
@@ -80,6 +86,7 @@ export class Contacts extends Component<IContactsForm> {
 	set errors(value: string) {
 		this.setText(this._errors, value);
 	}
+    
 	// Очистка всей формы.
 	resetForm(): void {
 		this._emailInput.value = '';

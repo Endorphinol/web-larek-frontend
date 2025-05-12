@@ -7,10 +7,6 @@ import {
 } from './../../types/index';
 import { Model } from './Model';
 
-// Реализация интерфейса.
-export type CatalogChangeEvent = {
-	catalog: IProductItem[];
-};
 // Объявление класса.
 export class AppState extends Model {
 	private _basket: string[] = [];
@@ -23,6 +19,7 @@ export class AppState extends Model {
 		address: '',
 		total: 0,
 	};
+
 	private _preview: string | null;
 	private _formErrors: FormErrors = {};
 
@@ -63,8 +60,8 @@ export class AppState extends Model {
 
 	// Добавить товар в корзину.
 	addToBasket(item: IProductItem) {
-		if (!this.basket.includes(item.id)) {
-			this.basket.push(item.id);
+		if (!this._basket.includes(item.id)) {
+			this._basket.push(item.id);
 			this.updateBasket();
 		}
 	}
@@ -86,7 +83,7 @@ export class AppState extends Model {
 		this._basket = [];
 		this.updateBasket();
 	}
-    
+
 	setPreview(item: IProductItem) {
 		this._preview = item.id;
 		this.events.emit('preview:changed', item);
@@ -112,6 +109,15 @@ export class AppState extends Model {
 		if (!this.order.address || this.order.address.trim().length < 5) {
 			errors.address = 'Введите корректный адрес (минимум 5 символов)';
 		}
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!this.order.email || !emailRegex.test(this.order.email)) {
+            errors.email = 'Введите корректный email';
+        }
+    
+        if (!this.order.phone || this.order.phone.replace(/\D/g, '').length < 11) {
+            errors.phone = 'Введите корректный телефон (минимум 11 цифр)';
+        }
 
 		this._formErrors = errors;
 		this.events.emit('formErrors:change', this._formErrors);

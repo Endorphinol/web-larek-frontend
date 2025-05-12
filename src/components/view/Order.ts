@@ -43,8 +43,8 @@ export class Order extends Component<IOrderForm> {
       });
   
       // Обработчик отправки формы
-      this.container.addEventListener('submit', (e) => {
-        e.preventDefault();
+      this.container.addEventListener('submit', (event) => {
+        event.preventDefault();
         if (this._selectedPayment && this._addressInput.value) {
           this.events.emit('order:submit', {
             payment: this._selectedPayment,
