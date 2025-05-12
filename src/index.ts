@@ -15,13 +15,14 @@ import { EventEmitter } from './components/base/events';
 import { Api } from './components/base/api';
 import { Tabs } from './components/view/Tabs';
 import { Card } from './components/view/Card';
+import { AppState } from './components/model/AppData';
 
 const events = new EventEmitter();
 const api = new LarekAPI(CDN_URL, API_URL);
-console.log(api.getItems());
-console.log(api.getItems());
 const model = new Model(events);
-console.log(model.getItems());
+
+// Модель данных приложения
+const appData = new AppState(events);
 
 // Чтобы мониторить все события, для отладки
 events.onAll(({ eventName, data }) => {
@@ -37,10 +38,6 @@ const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
 
-
-// Модель данных приложения.
-// const appData = new AppState({}, events);
-
 // Глобальные контейнеры.
 const page = new Page(document.body, events);
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
@@ -53,4 +50,12 @@ const basket = new Basket(cloneTemplate(basketTemplate), events);
 //         else events.emit('bids:open');
 //     }
 // });
+
 const order = new Order(cloneTemplate(orderTemplate), events);
+
+// Получаем лоты с сервера
+api.getItems()
+    .then(appData.setCatalog.bind(appData))
+    .catch((err: any) => {
+        console.error(err);
+    });

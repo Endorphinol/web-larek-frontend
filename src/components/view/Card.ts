@@ -1,4 +1,4 @@
-    import { Component } from "../base/Component";
+import { Component } from "../base/Component";
 import { ensureElement } from "../../utils/utils";
 import { IProductItem } from "../../types";
 
@@ -13,16 +13,15 @@ export class Card extends Component<IProductItem> {
     protected _price: HTMLElement;
     protected _button?: HTMLButtonElement;
     protected _description?: HTMLElement
-
-    constructor(container: HTMLElement, actions?: ICardActions) {
+    
+    constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions) {
         super(container);
 
-        this._title = ensureElement<HTMLElement>('.card__title', container);
-        this._image = ensureElement<HTMLImageElement>('.card__image', container);
-        this._category = ensureElement<HTMLElement>('.card__category', container);
-        this._price = ensureElement<HTMLElement>('.card__price', container);
-        this._button = container.querySelector('.card__button');
-        
+        this._title = ensureElement<HTMLElement>(`.${blockName}__title`, container);
+        this._image = ensureElement<HTMLImageElement>(`.${blockName}__image`, container);
+        this._button = container.querySelector(`.${blockName}__button`);
+        this._category = container.querySelector(`.${blockName}__category`);
+        this._description = container.querySelector(`.${blockName}__description`);
 
         if (actions?.onClick) {
             if (this._button) {
