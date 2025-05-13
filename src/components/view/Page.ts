@@ -21,6 +21,7 @@ export class Page extends Component<IPage> {
 			this.events.emit('basket:open');
 		});
 	}
+
 	// Cчетчик товаров.
 	set counter(value: number) {
 		this.setText(this._counter, String(value));
@@ -31,6 +32,7 @@ export class Page extends Component<IPage> {
 		this._catalog.replaceChildren(...items);
 		this.events.emit('catalog:updated');
 	}
+    
 	// Получение кнопки корзины.
 	get basketButton(): HTMLButtonElement {
 		return ensureElement<HTMLButtonElement>('.header__basket');

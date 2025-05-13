@@ -24,6 +24,7 @@ export class Contacts extends Component<IContactsForm> {
 			'button[type="submit"]',
 			container
 		);
+		
 		this._errors = ensureElement<HTMLElement>('.form__errors', container);
 
 		this._emailInput.addEventListener('input', () => {
@@ -54,6 +55,7 @@ export class Contacts extends Component<IContactsForm> {
 		// Изначальная валидация.
 		this._validateForm();
 	}
+
 	// Валидация формы общая.
 	private _validateForm(): boolean {
 		const isEmailValid = this._validateEmail(this._emailInput.value);

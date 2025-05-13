@@ -62,6 +62,7 @@ export class Order extends Component<IOrderForm> {
 		// Изначальная валидация.
 		this._validateForm();
 	}
+  
 	// Обновляет визуальное состояние кнопки оплаты (выбор).
 	private _updatePaymentUI(): void {
 		this._paymentButtons.forEach((button) => {

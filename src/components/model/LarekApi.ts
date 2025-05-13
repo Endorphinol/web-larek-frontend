@@ -14,10 +14,6 @@ export class LarekAPI extends Api implements ILarekAPI {
 		this.cdn = cdn;
 	}
 
-	/**
-	 * Возвращает массив товаров с сервера.
-	 * @returns Промис с массивом товаров.
-	 */
 	// Получить массив объектов с сервера.
 	async getItems(): Promise<IProductItem[]> {
 		try {
@@ -31,11 +27,7 @@ export class LarekAPI extends Api implements ILarekAPI {
 			throw new Error('Ошибка получения данных');
 		}
 	}
-
-	/**
-	 * Отправляет заказ на сервер.
-	 * @returns Возвращает промис с результатом отправки заказа.
-	 */
+	
 	// Отправить заказ.
 	async orderItems(order: IOrder): Promise<IOrderResult> {
 		try {

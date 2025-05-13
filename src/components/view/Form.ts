@@ -14,11 +14,15 @@ export class Form<T> extends Component<IFormState> {
 			'button[type=submit]',
 			this.container
 		);
+
 		this._errors = ensureElement<HTMLElement>('.form__errors', this.container);
+
 		// Установка начального состояния.
 		this.valid = false;
+
 		// Поля для ошибок.
 		this.errors = '';
+
 		// Обработчик событий по вводу.
 		this.container.addEventListener('input', (event: Event) => {
 			const target = event.target as HTMLInputElement;
@@ -32,6 +36,7 @@ export class Form<T> extends Component<IFormState> {
 			this.events.emit(`${this.container.name}:submit`);
 		});
 	}
+
 	// Реагируем на изменения данных в форме.
 	protected onInputChange(field: keyof T, value: string) {
 		this.events.emit(`${this.container.name}.${String(field)}:change`, {
@@ -39,10 +44,12 @@ export class Form<T> extends Component<IFormState> {
 			value,
 		});
 	}
+
 	// Управляет состоянием кнопки.
 	set valid(value: boolean) {
 		this._submit.disabled = !value;
 	}
+	
 	// Устанавливает текст ошибки.
 	set errors(value: string) {
 		this.setText(this._errors, value);
