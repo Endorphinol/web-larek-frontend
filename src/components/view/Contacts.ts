@@ -42,7 +42,7 @@ export class Contacts extends Component<IContactsForm> {
                 });
             }
         });
-
+		// Изначальная валидация.
         this._validateForm();
     }
 

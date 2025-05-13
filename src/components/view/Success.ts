@@ -2,8 +2,6 @@ import { Component } from "../base/Component";
 import { ensureElement } from "../../utils/utils";
 import { ISuccess, ISuccessActions } from "../../types";
 
-
-// Инициализация класса.
 export class Success extends Component<ISuccess> {
     protected _close: HTMLButtonElement;
     protected _title: HTMLElement;

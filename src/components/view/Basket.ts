@@ -3,7 +3,6 @@ import { ensureElement, formatNumber } from "../../utils/utils";
 import { EventEmitter } from "../base/events";
 import { IBasketView } from "../../types";
 
-// Создание класса корзины.
 export class Basket extends Component<IBasketView> {
     protected _list: HTMLElement;
     protected _total: HTMLElement;

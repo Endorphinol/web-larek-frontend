@@ -7,9 +7,6 @@ import {
 } from './../../types/index';
 import { Model } from './Model';
 
-export type CatalogChangeEvent = {
-	catalog: IProductItem[];
-};
 export class AppState extends Model {
 	basket: string[] = [];
 	catalog: IProductItem[];

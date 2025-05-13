@@ -1,12 +1,7 @@
 import { IEvents } from './../base/events';
 import {Component} from "../base/Component";
 import {ensureElement} from "../../utils/utils";
-
-// Реализиация интерфейса.
-interface IFormState {
-    valid: boolean;
-    errors: string[];
-}
+import { IFormState } from '../../types';
 
 // Инициализация класса.
 export class Form<T> extends Component<IFormState> {

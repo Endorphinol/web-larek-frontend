@@ -1,22 +1,14 @@
+import { IPage } from "../../types";
 import { ensureElement } from "../../utils/utils";
 import { Component } from "../base/Component";
 import { IEvents } from './../base/events';
 
-// Реализиация интерфейса.
-interface IPage {
-    _counter: number;
-    _catalog: HTMLElement[];
-    _locked: boolean;   
-}
-
-// Инициализация класса.
 export class Page extends Component<IPage> {
     protected _counter: HTMLElement;
     protected _catalog: HTMLElement;
     protected _wrapper: HTMLElement;
     protected _basket: HTMLButtonElement;
 
-// Инициализация всех элементов в классе.
     constructor(container: HTMLElement, protected events: IEvents) {
         super(container);
 

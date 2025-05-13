@@ -14,16 +14,16 @@ export class Order extends Component<IOrderForm> {
     constructor(container: HTMLFormElement, protected events: EventEmitter) {
       super(container);
   
-      // Инициализация элементов
+      // Поиск элементов.
       this._paymentButtons = Array.from(container.querySelectorAll('.order__buttons button'));
       this._addressInput = ensureElement<HTMLInputElement>('input[name="address"]', container);
       this._submitButton = ensureElement<HTMLButtonElement>('button[type="submit"]', container);
       this._errors = ensureElement<HTMLElement>('.form__errors', container);
   
-      // Обработчики для кнопок оплаты
+      // Обработчики для кнопок оплаты.
       this._paymentButtons.forEach(button => {
         button.addEventListener('click', () => {
-          this._selectedPayment = button.name; // Используем name вместо value
+          this._selectedPayment = button.name;
           this._updatePaymentUI();
           this._validateForm();
           this.events.emit('order.payment:change', {
@@ -33,7 +33,7 @@ export class Order extends Component<IOrderForm> {
         });
       });
   
-      // Обработчик для поля адреса
+      // Обработчик для поля адреса.
       this._addressInput.addEventListener('input', () => {
         this._validateForm();
         this.events.emit('order.address:change', {
@@ -42,7 +42,7 @@ export class Order extends Component<IOrderForm> {
         });
       });
   
-      // Обработчик отправки формы
+      // Обработчик отправки формы.
       this.container.addEventListener('submit', (e) => {
         e.preventDefault();
         if (this._selectedPayment && this._addressInput.value) {
@@ -53,7 +53,7 @@ export class Order extends Component<IOrderForm> {
         }
       });
   
-      // Изначальная валидация
+      // Изначальная валидация.
       this._validateForm();
     }
   

@@ -240,7 +240,7 @@ events.on('contacts:open', () => {
     appData.setOrderField('phone', data.phone);
     
     if (appData.validateOrder()) {
-        const total = appData.getTotal(); // Сохраняем сумму до очистки корзины
+        const total = appData.getTotal();
         api.orderItems({
             payment: appData.order.payment,
             address: appData.order.address,
@@ -251,9 +251,8 @@ events.on('contacts:open', () => {
         })
         .then(() => {
             modal.close();
-            // Сначала показываем Success с правильной суммой
-            events.emit('order:success', { total }); // Передаем сумму в событие
-            appData.clearBasket(); // Затем очищаем корзину
+            events.emit('order:success', { total });
+            appData.clearBasket(); 
         })
         .catch(err => {
             console.error(err);
