@@ -95,13 +95,13 @@ export class AppState extends Model {
 		} else if (field === 'email' || field === 'phone') {
 			this.order[field] = value;
 		}
-		this.validateOrder();
 	}
 
 	// Валидация заказа.
 	validateOrder() {
 		const errors: FormErrors = {};
-
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		
 		if (!this.order.payment) {
 			errors.payment = 'Выберите способ оплаты';
 		}
@@ -110,7 +110,6 @@ export class AppState extends Model {
 			errors.address = 'Введите корректный адрес (минимум 5 символов)';
 		}
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!this.order.email || !emailRegex.test(this.order.email)) {
             errors.email = 'Введите корректный email';
         }

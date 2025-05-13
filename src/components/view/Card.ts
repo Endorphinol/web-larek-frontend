@@ -9,7 +9,6 @@ export class Card extends Component<IProductItem> {
     protected _price: HTMLElement;
     protected _button?: HTMLButtonElement;
     protected _description?: HTMLElement;
-    protected inBasket?: boolean;
 
     constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions) {
         super(container);
