@@ -145,14 +145,14 @@ events.on('modal:close', () => {
 });
 
 // Обработка успешного оформления заказа
-events.on('order:success', () => {
+events.on('order:success', (data: { total: number }) => {
     const success = new Success(cloneTemplate(successTemplate), {
         onClick: () => modal.close()
     });
     
     modal.render({
         content: success.render({
-            description: `Списано ${appData.getTotal()} синапсов`
+            description: `Списано ${data.total} синапсов`
         })
     });
 });
@@ -240,19 +240,20 @@ events.on('contacts:open', () => {
     appData.setOrderField('phone', data.phone);
     
     if (appData.validateOrder()) {
+        const total = appData.getTotal(); // Сохраняем сумму до очистки корзины
         api.orderItems({
             payment: appData.order.payment,
             address: appData.order.address,
             email: appData.order.email,
             phone: appData.order.phone,
             items: appData.basket,
-            total: appData.getTotal()
+            total: total,
         })
         .then(() => {
             modal.close();
-            appData.clearBasket();
-            events.emit('basket:changed'); 
-            events.emit('order:success');
+            // Сначала показываем Success с правильной суммой
+            events.emit('order:success', { total }); // Передаем сумму в событие
+            appData.clearBasket(); // Затем очищаем корзину
         })
         .catch(err => {
             console.error(err);
