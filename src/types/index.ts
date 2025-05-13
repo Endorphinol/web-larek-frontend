@@ -97,11 +97,6 @@ export interface FormErrors {
 	phone?: string;
   }
 
-export interface IOrderForm {
-    payment: string;
-    address: string;
-}
-
 export interface ICardActions {
 	onClick: (event: MouseEvent) => void;
   }
