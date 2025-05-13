@@ -9,7 +9,7 @@ import { Model } from './Model';
 
 export class AppState extends Model {
 	basket: string[] = [];
-	catalog: IProductItem[];
+	catalog: IProductItem[] = [];
 	loading: boolean;
 	order: IOrder = {
 		email: '',
@@ -23,20 +23,22 @@ export class AppState extends Model {
 	preview: string | null;
 	formErrors: FormErrors = {};
 
-	getTotal() {
+	// Получить общую стоимость в корзине.
+	getTotal(): number {
 		return this.basket.reduce((total, id) => {
 			const item = this.catalog.find((item) => item.id === id);
 			return total + (item?.price || 0);
 		}, 0);
 	}
 
-	setCatalog(items: IProductItem[]) {
+	// Позволяет записать в католог массив объектов.
+	setCatalog(items: IProductItem[]): void {
 		this.catalog = items;
 		this.events.emit('items:changed', { catalog: this.catalog });
 	}
 
 	// Добавить товар в корзину.
-	addToBasket(item: IProductItem) {
+	addToBasket(item: IProductItem): void {
 		if (!this.basket.includes(item.id)) {
 			this.basket.push(item.id);
 			this.updateBasket();
@@ -44,28 +46,30 @@ export class AppState extends Model {
 	}
 
 	// Обновление корзины.
-	private updateBasket() {
+	private updateBasket(): void {
 		this.events.emit('basket:changed');
 		this.events.emit('counter:updated', { basket: this.basket.length });
 	}
 
 	// Удалить товар с корзины.
-	removeFromBasket(id: string) {
+	removeFromBasket(id: string): void {
 		this.basket = this.basket.filter((item) => item !== id);
 		this.updateBasket();
 	}
 
 	// Очистить корзину.
-	clearBasket() {
+	clearBasket(): void {
 		this.basket = [];
 		this.updateBasket();
 	}
 
-	setPreview(item: IProductItem) {
+	// Хранит ID товара в модальном окне.
+	setPreview(item: IProductItem): void {
 		this.preview = item.id;
 		this.events.emit('preview:changed', item);
 	}
 
+	// Обновление полей заказа.
 	setOrderField(field: keyof IOrderForm | keyof IContactsForm, value: string) {
 		if (field === 'payment' || field === 'address') {
 			this.order[field] = value;
@@ -78,6 +82,7 @@ export class AppState extends Model {
 	// Валидация заказа.
 	validateOrder() {
 		const errors: FormErrors = {};
+		this.formErrors = errors;
 
 		if (!this.order.payment) {
 			errors.payment = 'Выберите способ оплаты';
@@ -87,7 +92,6 @@ export class AppState extends Model {
 			errors.address = 'Введите корректный адрес (минимум 5 символов)';
 		}
 
-		this.formErrors = errors;
 		this.events.emit('formErrors:change', this.formErrors);
 		return Object.keys(errors).length === 0;
 	}

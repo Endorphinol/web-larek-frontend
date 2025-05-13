@@ -16,7 +16,7 @@ export class Model {
  * @param items Массив товаров
  * 
  */
-	setItems(items: IProductItem[]) {
+	setItems(items: IProductItem[]): void {
 		this.items = items;
 		this.events.emit('items:changed', this.items);
 	}

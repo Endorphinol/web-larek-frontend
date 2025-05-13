@@ -1,71 +1,75 @@
-import { Component } from "../base/Component";
-import { ICardActions, IProductItem } from "../../types";
+import { Component } from '../base/Component';
+import { ICardActions, IProductItem } from '../../types';
 
-// Создание класса элемент карточки.
 export class Card extends Component<IProductItem> {
-    protected _title: HTMLElement;
-    protected _image: HTMLImageElement;
-    protected _category: HTMLElement;
-    protected _price: HTMLElement;
-    protected _button?: HTMLButtonElement;
-    protected _description?: HTMLElement;
+	protected _title: HTMLElement;
+	protected _image: HTMLImageElement;
+	protected _category: HTMLElement;
+	protected _price: HTMLElement;
+	protected _button?: HTMLButtonElement;
+	protected _description?: HTMLElement;
 
-    constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions) {
-        super(container);
+	constructor(
+		protected blockName: string,
+		container: HTMLElement,
+		actions?: ICardActions
+	) {
+		super(container);
 
-        this._title = container.querySelector(`.${blockName}__title`);
-        this._image = container.querySelector(`.${blockName}__image`);
-        this._category = container.querySelector(`.${blockName}__category`);
-        this._price = container.querySelector(`.${blockName}__price`);
-        this._button = container.querySelector(`.${blockName}__button`);
-        this._description = container.querySelector(`.${blockName}__text`);
+		this._title = container.querySelector(`.${blockName}__title`);
+		this._image = container.querySelector(`.${blockName}__image`);
+		this._category = container.querySelector(`.${blockName}__category`);
+		this._price = container.querySelector(`.${blockName}__price`);
+		this._button = container.querySelector(`.${blockName}__button`);
+		this._description = container.querySelector(`.${blockName}__text`);
 
-        if (actions?.onClick) {
-            if (this._button) {
-                this._button.addEventListener('click', actions.onClick);
-            } else {
-                container.addEventListener('click', actions.onClick);
-            }
-        }
-    }
+		if (actions?.onClick) {
+			if (this._button) {
+				this._button.addEventListener('click', actions.onClick);
+			} else {
+				container.addEventListener('click', actions.onClick);
+			}
+		}
+	}
+	// Управление кнопкой.
+	toggleButton(state: boolean): void {
+		if (this._button) {
+			this.setDisabled(this._button, state);
+		}
+	}
+	// Установливает ID товара.
+	set id(value: string) {
+		this.container.dataset.id = value;
+	}
 
-    toggleButton(state: boolean) {
-        if (this._button) {
-            this.setDisabled(this._button, state);
-        }
-    }
+	// Установка текста на кнопку.
+	set buttonText(value: string) {
+		this.setText(this._button, value);
+	}
 
-    set id(value: string) {
-        this.container.dataset.id = value;
-    }
+	// Отрисовка карточки.
+	render(data: IProductItem & { buttonText?: string }): HTMLElement {
+		super.render(data);
 
-    // Установка текста на кнопку.
-    set buttonText(value: string) {
-         this.setText(this._button, value);
-     }
+		this.setText(this._title, data.title);
+		this.setImage(this._image, data.image, data.title);
+		this.setText(this._category, data.category);
 
-     render(data: IProductItem & { buttonText?: string }): HTMLElement {
-        super.render(data);
-        
-        this.setText(this._title, data.title);
-        this.setImage(this._image, data.image, data.title);
-        this.setText(this._category, data.category);
+		if (this._description && data.description) {
+			this.setText(this._description, data.description);
+		}
 
-        if (this._description && data.description) {
-            this.setText(this._description, data.description);
-        }
+		if (data.price !== null) {
+			this.setText(this._price, `${data.price} синапсов`);
+		} else {
+			this.setText(this._price, 'Бесценно');
+		}
 
-        if (data.price !== null) {
-            this.setText(this._price, `${data.price} синапсов`);
-        } else {
-            this.setText(this._price, 'Бесценно');
-        }
+		if (this._button && data.buttonText) {
+			this.setText(this._button, data.buttonText);
+			this.setDisabled(this._button, data.price === null);
+		}
 
-        if (this._button && data.buttonText) {
-            this.setText(this._button, data.buttonText);
-            this.setDisabled(this._button, data.price === null);
-        }
-        
-        return this.container;
-    }
+		return this.container;
+	}
 }
