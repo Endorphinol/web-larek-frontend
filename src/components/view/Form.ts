@@ -31,8 +31,8 @@ export class Form<T> extends Component<IFormState> {
 			this.onInputChange(field, value);
 		});
 		// Обработчик событий по отправке.
-		this.container.addEventListener('submit', (e: Event) => {
-			e.preventDefault();
+		this.container.addEventListener('submit', (event: Event) => {
+			event.preventDefault();
 			this.events.emit(`${this.container.name}:submit`);
 		});
 	}
@@ -49,7 +49,7 @@ export class Form<T> extends Component<IFormState> {
 	set valid(value: boolean) {
 		this._submit.disabled = !value;
 	}
-	
+
 	// Устанавливает текст ошибки.
 	set errors(value: string) {
 		this.setText(this._errors, value);

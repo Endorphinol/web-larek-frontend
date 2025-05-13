@@ -90,7 +90,7 @@ events.on('basket:changed', () => {
 			onClick: () => events.emit('basket:remove', { id }),
 		});
 		return basketItem.render({
-			index: index + 1,
+            index: index + 1,
 			title: item.title,
 			price: item.price,
 		});
@@ -100,7 +100,10 @@ events.on('basket:changed', () => {
 
 // Открытие корзины.
 page.basketButton.addEventListener('click', () => {
-	events.emit('basket:open');
+    events.emit('basket:changed'); 
+    modal.render({
+        content: basket.render()
+    });
 });
 
 // Добавление/удаление товара.
@@ -110,24 +113,6 @@ events.on('basket:toggle', (item: IProductItem) => {
 	} else {
 		appData.addToBasket(item);
 	}
-});
-
-// Обновление корзины.
-events.on('basket:open', () => {
-	basket.items = appData.basket.map((id) => {
-		const item = appData.catalog.find((item) => item.id === id);
-		const card = new Card('card', cloneTemplate(cardBasketTemplate), {
-			onClick: () => events.emit('basket:remove', { id }),
-		});
-		return card.render({
-			...item,
-			buttonText: 'Убрать',
-		});
-	});
-	basket.total = appData.getTotal();
-	modal.render({
-		content: basket.render(),
-	});
 });
 
 // Удаление товара из корзины.
@@ -156,29 +141,6 @@ events.on('order:success', (data: { total: number }) => {
 		content: success.render({
 			description: `Списано ${data.total} синапсов`,
 		}),
-	});
-});
-
-// Добавление и удаление товара из корзины.
-events.on('basket:open', () => {
-	basket.items = appData.basket.map((id) => {
-		const item = appData.catalog.find((item) => item.id === id);
-		if (!item) return document.createElement('div');
-
-		const basketItem = new BasketItem(cloneTemplate(cardBasketItemTemplate), {
-			onClick: () => events.emit('basket:remove', { id }),
-		});
-
-		return basketItem.render({
-			title: item.title,
-			price: item.price,
-			index: item.index,
-		});
-	});
-
-	basket.total = appData.getTotal();
-	modal.render({
-		content: basket.render(),
 	});
 });
 
