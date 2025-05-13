@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { DefinePlugin } = require('webpack');
 const TerserPlugin = require("terser-webpack-plugin");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 require('dotenv').config({
   path: path.join(process.cwd(), process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env')
@@ -38,7 +39,16 @@ const config = {
     new DefinePlugin({
       'process.env.DEVELOPMENT': !isProduction,
       'process.env.API_ORIGIN': JSON.stringify(process.env.API_ORIGIN ?? '')
-    })
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'src/public/favicon.ico', to: 'favicon.ico' },
+        { from: 'src/public/apple-touch-icon.png', to: 'apple-touch-icon.png' },
+        { from: 'src/public/favicon-32x32.png', to: 'favicon-32x32.png' },
+        { from: 'src/public/favicon-16x16.png', to: 'favicon-16x16.png' },
+        { from: 'src/public/safari-pinned-tab.svg', to: 'safari-pinned-tab.svg' }
+      ]
+    }),
   ],
   module: {
     rules: [
