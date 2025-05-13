@@ -1,7 +1,13 @@
-import { IPage } from "../../types";
 import { ensureElement } from "../../utils/utils";
 import { Component } from "../base/Component";
 import { IEvents } from './../base/events';
+
+// Реализиация интерфейса.
+interface IPage {
+    _counter: number;
+    _catalog: HTMLElement[];
+    _locked: boolean;   
+}
 
 // Инициализация класса.
 export class Page extends Component<IPage> {
@@ -23,10 +29,7 @@ export class Page extends Component<IPage> {
             this.events.emit('basket:open');
         });
     }
-/**
- * Счетчик товаров в сверху в хэддере.
- * @param value Принимаемое значение число.
- */
+    // Cчетчик товаров.
     set counter(value: number) {
         this.setText(this._counter, String(value));
     }
@@ -37,14 +40,10 @@ export class Page extends Component<IPage> {
         this.events.emit('catalog:updated');
     }
 
-    // 
     get basketButton(): HTMLButtonElement {
         return ensureElement<HTMLButtonElement>('.header__basket');
     }
-/**
- * Блокировка прокрутки страницы
- * @param value Принимается булево значение.
- */
+     // Блокировка прокрутки страницы.
     set locked(value: boolean) {
         if (value) {
             this._wrapper.classList.add('page__wrapper_locked');

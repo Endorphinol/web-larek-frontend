@@ -56,12 +56,12 @@ events.on('items:changed', () => {
             image: item.image,
             price: item.price,
             category: item.category,
-            description: item.description,
+            description: item.description
         });
     });
 });
 
-// Выбор товара в корзине.
+// Выбор товара
 events.on('card:select', (item: IProductItem) => {
     const card = new Card('card', cloneTemplate(cardPreviewTemplate), {
         onClick: () => {
@@ -69,6 +69,7 @@ events.on('card:select', (item: IProductItem) => {
             card.buttonText = appData.basket.includes(item.id) ? 'Убрать' : 'В корзину';
         }
     });
+
     modal.render({
         content: card.render({
             ...item,
@@ -77,7 +78,7 @@ events.on('card:select', (item: IProductItem) => {
     });
 });
 
-// Работа с элеметом корзины.
+// Работа с элеметом корзины корзиной
 events.on('basket:changed', () => {
     page.counter = appData.basket.length; 
     basket.items = appData.basket.map((id, index) => {
@@ -233,8 +234,7 @@ events.on('contacts:open', () => {
     const messages = Object.values(errors).filter(Boolean).join('; ');
     order.errors = messages;
   });
-  
-// Обработка данных с формы Контактов.
+
   events.on('contacts:submit', (data: { email: string; phone: string }) => {
     appData.setOrderField('email', data.email);
     appData.setOrderField('phone', data.phone);

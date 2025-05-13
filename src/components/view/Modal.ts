@@ -1,7 +1,11 @@
 import { IEvents } from './../base/events';
 import { Component } from "../base/Component";
 import { ensureElement } from "../../utils/utils";
-import { IModalData } from '../../types';
+
+
+interface IModalData {
+    content: HTMLElement;
+}
 
 export class Modal extends Component<IModalData> {
     protected _closeButton: HTMLButtonElement;
@@ -35,8 +39,8 @@ export class Modal extends Component<IModalData> {
         this.events.emit('modal:close');
     }
 
-    handleEscape = (event: KeyboardEvent) => {
-        if (event.key === 'Escape') {
+    handleEscape = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
             this.close();
         }
     };
