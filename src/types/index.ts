@@ -3,14 +3,14 @@ export interface IProductList {
 }
 
 export interface IProductItem {
-	index?: number;
 	id?: string;
+	title: string;
 	description?: string;
 	image: string;
-	title: string;
 	category: string;
 	price: number | null;
-}
+	index?: number; 
+  }
 
 export interface IBasketView {
     items: HTMLElement[];
@@ -35,6 +35,7 @@ export interface IContactsForm {
     email: string;
     phone: string;
 }
+// Элемент корзины.
 export interface IBasketItem {
 	index: number;
 	title: string;
@@ -50,10 +51,10 @@ export type CatalogChangeEvent = {
 };
 
 export interface IPage {
-    counter: number;
-    catalog: HTMLElement[];
-    locked: boolean;
-}
+	counter: number;
+	catalog: HTMLElement[];
+	locked: boolean;
+  }
 
 export interface IOrderResult {
     id: string;
@@ -71,7 +72,6 @@ export interface INotFoundGet {
 export interface ISuccess {
     description: string;
 }
-
 
 export interface INotFoundPost {
 	error: string;
@@ -91,11 +91,11 @@ export interface ILarekAPI {
 }
 
 export interface FormErrors {
-    payment?: string;
-    address?: string;
-    email?: string;
-    phone?: string;
-}
+	payment?: string;
+	address?: string;
+	email?: string;
+	phone?: string;
+  }
 
 export interface IOrderForm {
     payment: string;
@@ -103,8 +103,8 @@ export interface IOrderForm {
 }
 
 export interface ICardActions {
-    onClick: (event: MouseEvent) => void;
-}
+	onClick: (event: MouseEvent) => void;
+  }
 
 export interface IModalData {
     content: HTMLElement;
