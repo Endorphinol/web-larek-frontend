@@ -77,7 +77,7 @@ export class Contacts extends Component<IContactsForm> {
 	set valid(value: boolean) {
 		this.setDisabled(this._submitButton, !value);
 	}
-	
+
 	// Установка текста ошибки.
 	set errors(value: string) {
 		this.setText(this._errors, value);
