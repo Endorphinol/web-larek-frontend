@@ -24,7 +24,7 @@ export class Contacts extends Component<IContactsForm> {
 			'button[type="submit"]',
 			container
 		);
-		
+
 		this._errors = ensureElement<HTMLElement>('.form__errors', container);
 
 		this._emailInput.addEventListener('input', () => {
@@ -60,10 +60,18 @@ export class Contacts extends Component<IContactsForm> {
 	private _validateForm(): boolean {
 		const isEmailValid = this._validateEmail(this._emailInput.value);
 		const isPhoneValid = this._validatePhone(this._phoneInput.value);
-
+		// Проверка валидности полей.
+		if (!isEmailValid) {
+			this.errors = 'Введите корректный email';
+		} else if (!isPhoneValid) {
+			this.errors = 'Введите корректный телефон';
+		} else {
+			this.errors = '';
+		}
 		this.setDisabled(this._submitButton, !(isEmailValid && isPhoneValid));
 		return isEmailValid && isPhoneValid;
 	}
+
 	// Проверка валидности электронной почты.
 	private _validateEmail(email: string): boolean {
 		const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
