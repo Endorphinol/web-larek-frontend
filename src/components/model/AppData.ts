@@ -1,3 +1,4 @@
+import { IEvents } from '../base/events';
 import {
 	FormErrors,
 	IContactsForm,
@@ -5,9 +6,8 @@ import {
 	IOrderForm,
 	IProductItem,
 } from './../../types/index';
-import { Model } from './Model';
 
-export class AppState extends Model {
+export class AppState {
 	basket: string[] = [];
 	catalog: IProductItem[] = [];
 	loading: boolean;
@@ -22,6 +22,11 @@ export class AppState extends Model {
 
 	preview: string | null;
 	formErrors: FormErrors = {};
+	events: IEvents;
+
+	constructor(events: IEvents) {
+        this.events = events;
+    }
 
 	// Получить общую стоимость в корзине.
 	getTotal(): number {

@@ -24,7 +24,8 @@ const appData = new AppState(events);
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#basket');
-const cardBasketItemTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
+const cardBasketItemTemplate =
+	ensureElement<HTMLTemplateElement>('#card-basket');
 const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
 const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');
@@ -34,6 +35,7 @@ const page = new Page(document.body, events);
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const basket = new Basket(cloneTemplate(cardBasketTemplate), events);
 const order = new Order(cloneTemplate(orderTemplate), events);
+const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
 
 // Загрузка товаров.
 api
@@ -90,7 +92,7 @@ events.on('basket:changed', () => {
 			onClick: () => events.emit('basket:remove', { id }),
 		});
 		return basketItem.render({
-            index: index + 1,
+			index: index + 1,
 			title: item.title,
 			price: item.price,
 		});
@@ -99,11 +101,10 @@ events.on('basket:changed', () => {
 });
 
 // Открытие корзины.
-page.basketButton.addEventListener('click', () => {
-    events.emit('basket:changed'); 
-    modal.render({
-        content: basket.render()
-    });
+events.on('basket:open', () => {
+	modal.render({
+		content: basket.render(),
+	});
 });
 
 // Добавление/удаление товара.
@@ -197,7 +198,6 @@ events.on('order:submit', (data: { payment: string; address: string }) => {
 
 // Модальное окно контакты.
 events.on('contacts:open', () => {
-	const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
 	modal.render({
 		content: contacts.render({
 			email: appData.order.email,

@@ -30,12 +30,6 @@ export class Page extends Component<IPage> {
 	// Замена элементов в катологе товаров.
 	set catalog(items: HTMLElement[]) {
 		this._catalog.replaceChildren(...items);
-		this.events.emit('catalog:updated');
-	}
-    
-	// Получение кнопки корзины.
-	get basketButton(): HTMLButtonElement {
-		return ensureElement<HTMLButtonElement>('.header__basket');
 	}
 
 	// Блокировка прокрутки страницы.
