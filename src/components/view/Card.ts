@@ -31,6 +31,7 @@ export class Card extends Component<IProductItem> {
 			}
 		}
 	}
+
 	// Управление кнопкой.
 	toggleButton(state: boolean): void {
 		if (this._button) {
@@ -47,6 +48,17 @@ export class Card extends Component<IProductItem> {
 		this.setText(this._button, value);
 	}
 
+    private getCategoryClass(category: string): string {
+        const categoryMap: Record<string, string> = {
+            'софт-скил': 'soft',
+            'другое': 'other',
+            'дополнительное': 'additional',
+            'кнопка': 'button',
+            'хард-скил': 'hard'
+        };
+        return `card__category_${categoryMap[category.toLowerCase()]}`;
+    }
+
 	// Отрисовка карточки.
 	render(data: IProductItem & { buttonText?: string }): HTMLElement {
 		super.render(data);
@@ -58,6 +70,12 @@ export class Card extends Component<IProductItem> {
 		if (this._description && data.description) {
 			this.setText(this._description, data.description);
 		}
+
+        if (this._category) {
+            this.setText(this._category, data.category);
+            this._category.className = `${this.blockName}__category`;
+            this._category.classList.add(this.getCategoryClass(data.category));
+        }
 
 		if (data.price !== null) {
 			this.setText(this._price, `${data.price} синапсов`);
