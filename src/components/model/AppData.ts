@@ -77,7 +77,7 @@ export class AppState {
 	// Валидация заказа.
 	validateOrder(): boolean {
 		const errors: FormErrors = {};
-		const isValid = !(!this.order.payment || !this.order.address || this.order.address.trim().length < 5);
+		const isValid = this.order.payment && this.order.address && this.order.address.trim().length >= 5;
 		
 		if (!this.order.payment) errors.payment = 'Выберите способ оплаты';
 		if (!this.order.address || this.order.address.trim().length < 5) {
@@ -89,21 +89,18 @@ export class AppState {
 	}
 
 	// Валидация контактов.
-	validateContacts(): boolean {
-		const errors: FormErrors = {};
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+validateContacts(): boolean {
+    const errors: FormErrors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidEmail = !!this.order.email && emailRegex.test(this.order.email);
+    const isValidPhone = !!this.order.phone && this.order.phone.replace(/\D/g, '').length >= 11;
 
-		if (!this.order.email || !emailRegex.test(this.order.email)) {
-			errors.email = 'Введите корректный email';
-		}
+    if (!isValidEmail) errors.email = 'Введите корректный email';
+    if (!isValidPhone) errors.phone = 'Телефон должен содержать 11 цифр';
 
-		if (!this.order.phone || this.order.phone.replace(/\D/g, '').length < 11) {
-			errors.phone = 'Телефон должен содержать 11 цифр';
-		}
-
-		this.events.emit('formErrors:change', errors);
-		return Object.keys(errors).length === 0;
-	}
+    this.events.emit('formErrors:change', errors);
+    return isValidEmail && isValidPhone;
+}
 
 	// Обновление полей заказа.
 	setOrderField(field: keyof IOrderForm | keyof IContactsForm, value: string) {

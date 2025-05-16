@@ -17,8 +17,8 @@ import { Contacts } from './components/view/Contacts';
 
 // Инициализация основных объектов.
 const events = new EventEmitter();
-const api = new LarekAPI(CDN_URL, API_URL);
 const appData = new AppState(events);
+const api = new LarekAPI(CDN_URL, API_URL);
 
 // Шаблоны.
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
@@ -99,7 +99,7 @@ events.on('basket:changed', () => {
 			index: index + 1,
 			title: item.title,
 			price: item.price,
-            id: id,
+			id: id,
 		});
 	});
 	basket.total = appData.getTotal();
@@ -159,7 +159,7 @@ events.on(
 	'order.payment:change',
 	(data: { field: keyof IOrderForm; value: string }) => {
 		appData.setOrderField(data.field, data.value);
-		appData.validateOrder();
+		order.valid = appData.validateOrder();
 	}
 );
 
@@ -177,7 +177,7 @@ events.on(
 	'contacts.email:change',
 	(data: { field: keyof IContactsForm; value: string }) => {
 		appData.setOrderField(data.field as 'email' | 'phone', data.value);
-		appData.validateContacts();
+		contacts.valid = appData.validateContacts();
 	}
 );
 
@@ -186,17 +186,18 @@ events.on(
 	'contacts.phone:change',
 	(data: { field: keyof IContactsForm; value: string }) => {
 		appData.setOrderField(data.field as 'email' | 'phone', data.value);
-		appData.validateContacts();
+		contacts.valid = appData.validateContacts();
 	}
 );
 
 // Оформление заказа.
 events.on('order:submit', (data: { payment: string; address: string }) => {
-	appData.setOrderField('payment', data.payment);
-	appData.setOrderField('address', data.address);
-
-	events.emit('contacts:open');
-	events.emit('modal:close');
+    if (appData.validateOrder()) {
+        appData.setOrderField('payment', data.payment);
+        appData.setOrderField('address', data.address);
+        events.emit('contacts:open');
+        events.emit('modal:close');
+    }
 });
 
 // Модальное окно контакты.
@@ -217,28 +218,20 @@ events.on('formErrors:change', (errors: FormErrors) => {
 });
 
 // Отправка контактов форма.
-events.on('contacts:submit', (data: { email: string; phone: string }) => {
-	appData.setOrderField('email', data.email);
-	appData.setOrderField('phone', data.phone);
-
-	if (appData.validateContacts()) {
-		const total = appData.getTotal();
-		api
-			.orderItems({
-				payment: appData.order.payment,
-				address: appData.order.address,
-				email: appData.order.email,
-				phone: appData.order.phone,
-				items: appData.basket,
-				total: total,
-			})
-			.then(() => {
-				modal.close();
-				events.emit('order:success', { total });
-				appData.clearBasket();
-			})
-			.catch((err) => {
-				console.error(err);
-			});
-	}
+events.on('contacts:submit', () => {
+    if (appData.validateContacts()) {
+        const total = appData.getTotal();
+        api.orderItems({
+            payment: appData.order.payment,
+            address: appData.order.address,
+            email: appData.order.email,
+            phone: appData.order.phone,
+            items: appData.basket,
+            total: total
+        }).then(() => {
+            modal.close();
+            events.emit('order:success', { total });
+            appData.clearBasket();
+        });
+    }
 });

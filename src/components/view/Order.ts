@@ -69,9 +69,11 @@ export class Order extends Component<IOrderForm> {
 	}
 
 	// Управление состоянием кнопки.
-	set valid(value: boolean) {
-		this.setDisabled(this._submitButton, !value);
-	}
+  set valid(value: boolean) {
+    const isAddressValid = this._addressInput.value.trim().length >= 5;
+    const isPaymentSelected = this._selectedPayment !== null;
+    this.setDisabled(this._submitButton, !(isAddressValid && isPaymentSelected));
+}
 
 	// Установка текста ошибки.
 	set errors(value: string) {
