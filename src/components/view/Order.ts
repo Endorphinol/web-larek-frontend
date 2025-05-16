@@ -57,7 +57,7 @@ export class Order extends Component<IOrderForm> {
 			}
 		});
 	}
-  
+
 	// Обновляет визуальное состояние кнопки оплаты (выбор).
 	private _updatePaymentUI(): void {
 		this._paymentButtons.forEach((button) => {
@@ -69,11 +69,9 @@ export class Order extends Component<IOrderForm> {
 	}
 
 	// Управление состоянием кнопки.
-  set valid(value: boolean) {
-    const isAddressValid = this._addressInput.value.trim().length >= 5;
-    const isPaymentSelected = this._selectedPayment !== null;
-    this.setDisabled(this._submitButton, !(isAddressValid && isPaymentSelected));
-}
+	set valid(value: boolean) {
+		this.setDisabled(this._submitButton, !value);
+	}
 
 	// Установка текста ошибки.
 	set errors(value: string) {

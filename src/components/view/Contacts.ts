@@ -48,9 +48,7 @@ export class Contacts extends Component<IContactsForm> {
 
 	// Блокировка / разблокировка кнопка отправки.
 	set valid(value: boolean) {
-		const emailValid = this._emailInput.value.includes('@');
-		const phoneValid = this._phoneInput.value.replace(/\D/g, '').length >= 11;
-		this.setDisabled(this._submitButton, !(emailValid && phoneValid));
+		this.setDisabled(this._submitButton, !value);
 	}
 
 	// Установка текста ошибки.
