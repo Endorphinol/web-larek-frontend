@@ -24,8 +24,7 @@ const api = new LarekAPI(CDN_URL, API_URL);
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#basket');
-const cardBasketItemTemplate =
-	ensureElement<HTMLTemplateElement>('#card-basket');
+const cardBasketItemTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
 const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
 const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');
@@ -192,12 +191,12 @@ events.on(
 
 // Оформление заказа.
 events.on('order:submit', (data: { payment: string; address: string }) => {
-    if (appData.validateOrder()) {
-        appData.setOrderField('payment', data.payment);
-        appData.setOrderField('address', data.address);
-        events.emit('contacts:open');
-        events.emit('modal:close');
-    }
+	if (appData.validateOrder()) {
+		appData.setOrderField('payment', data.payment);
+		appData.setOrderField('address', data.address);
+		events.emit('contacts:open');
+		events.emit('modal:close');
+	}
 });
 
 // Модальное окно контакты.
@@ -219,19 +218,21 @@ events.on('formErrors:change', (errors: FormErrors) => {
 
 // Отправка контактов форма.
 events.on('contacts:submit', () => {
-    if (appData.validateContacts()) {
-        const total = appData.getTotal();
-        api.orderItems({
-            payment: appData.order.payment,
-            address: appData.order.address,
-            email: appData.order.email,
-            phone: appData.order.phone,
-            items: appData.basket,
-            total: total
-        }).then(() => {
-            modal.close();
-            events.emit('order:success', { total });
-            appData.clearBasket();
-        });
-    }
+	if (appData.validateContacts()) {
+		const total = appData.getTotal();
+		api
+			.orderItems({
+				payment: appData.order.payment,
+				address: appData.order.address,
+				email: appData.order.email,
+				phone: appData.order.phone,
+				items: appData.basket,
+				total: total,
+			})
+			.then(() => {
+				modal.close();
+				events.emit('order:success', { total });
+				appData.clearBasket();
+			});
+	}
 });

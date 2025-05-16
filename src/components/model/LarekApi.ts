@@ -27,7 +27,7 @@ export class LarekAPI extends Api implements ILarekAPI {
 			throw new Error('Ошибка получения данных');
 		}
 	}
-	
+
 	// Отправить заказ.
 	async orderItems(order: IOrder): Promise<IOrderResult> {
 		try {

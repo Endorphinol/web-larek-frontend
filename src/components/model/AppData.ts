@@ -77,30 +77,35 @@ export class AppState {
 	// Валидация заказа.
 	validateOrder(): boolean {
 		const errors: FormErrors = {};
-		const isValid = this.order.payment && this.order.address && this.order.address.trim().length >= 5;
-		
+		const isValid =
+			this.order.payment &&
+			this.order.address &&
+			this.order.address.trim().length >= 5;
+
 		if (!this.order.payment) errors.payment = 'Выберите способ оплаты';
 		if (!this.order.address || this.order.address.trim().length < 5) {
 			errors.address = 'Адрес должен содержать минимум 5 символов';
 		}
-	
+
 		this.events.emit('formErrors:change', errors);
 		return isValid;
 	}
 
 	// Валидация контактов.
-validateContacts(): boolean {
-    const errors: FormErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isValidEmail = !!this.order.email && emailRegex.test(this.order.email);
-    const isValidPhone = !!this.order.phone && this.order.phone.replace(/\D/g, '').length >= 11;
+	validateContacts(): boolean {
+		const errors: FormErrors = {};
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		const isValidEmail =
+			!!this.order.email && emailRegex.test(this.order.email);
+		const isValidPhone =
+			!!this.order.phone && this.order.phone.replace(/\D/g, '').length >= 11;
 
-    if (!isValidEmail) errors.email = 'Введите корректный email';
-    if (!isValidPhone) errors.phone = 'Телефон должен содержать 11 цифр';
+		if (!isValidEmail) errors.email = 'Введите корректный email';
+		if (!isValidPhone) errors.phone = 'Телефон должен содержать 11 цифр';
 
-    this.events.emit('formErrors:change', errors);
-    return isValidEmail && isValidPhone;
-}
+		this.events.emit('formErrors:change', errors);
+		return isValidEmail && isValidPhone;
+	}
 
 	// Обновление полей заказа.
 	setOrderField(field: keyof IOrderForm | keyof IContactsForm, value: string) {

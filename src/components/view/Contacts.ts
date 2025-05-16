@@ -41,9 +41,9 @@ export class Contacts extends Component<IContactsForm> {
 			});
 		});
 		this.container.addEventListener('submit', (event) => {
-            event.preventDefault();
-            this.events.emit('contacts:submit');
-        });
+			event.preventDefault();
+			this.events.emit('contacts:submit');
+		});
 	}
 
 	// Блокировка / разблокировка кнопка отправки.

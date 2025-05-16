@@ -8,7 +8,7 @@ export class BasketItem extends Component<IBasketItem> {
 	protected _title: HTMLElement;
 	protected _price: HTMLElement;
 	protected _button: HTMLButtonElement;
-    protected id: string;
+	protected id: string;
 
 	constructor(
 		container: HTMLElement,
@@ -25,16 +25,16 @@ export class BasketItem extends Component<IBasketItem> {
 			container
 		);
 
-        if (actions?.onClick) {
-            this._button.addEventListener('click', (event: MouseEvent) => {
-                actions.onClick(event);
-            });
-        }
+		if (actions?.onClick) {
+			this._button.addEventListener('click', (event: MouseEvent) => {
+				actions.onClick(event);
+			});
+		}
 	}
 
 	// Установка элемента в корзину.
 	render(item: IBasketItem): HTMLElement {
-        this.id = item.id;
+		this.id = item.id;
 		this.setText(this._index, item.index ? String(item.index) : '');
 		this.setText(this._title, item.title);
 		this.setText(this._price, `${item.price} синапсов`);

@@ -46,7 +46,7 @@ export class Modal extends Component<IModalData> {
 			this.close();
 		}
 	};
-    
+
 	// Отрисовка модального окна.
 	render(data: IModalData): HTMLElement {
 		super.render(data);
