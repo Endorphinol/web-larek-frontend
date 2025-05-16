@@ -263,11 +263,6 @@ export interface IFormState {
 - `getItems(): Promise<IProductItem[]>` - позволяет получить массив объектов с сервера.
 - `orderItems(order: IOrder): Promise<IOrderResult>` - позволяет отправить заказ.
 ---
-### Класс `Model` используется для сохранения данных с сервера и получения данных.
-- `getItems(): IProductItem[]` - получение массива товаров со слоя данных.
-- `setItems(items: IProductItem[]): void` -  позволяет сохранить массив товаров в слой данных.
-- `getItem(id: string): IProductItem` -  получение одного товара по ID из слоя данных.
-
 ## Описание слоя представления:
 ### Класс `Basket` отвечает за отображение корзины, наследует методы и свойства класса `Component`.
 #### Используется конструктор: 
@@ -343,7 +338,6 @@ export interface IFormState {
 * Передается брокер событий.
 #### Используются следующие методы: 
 - `_updatePaymentUI(): void` - обновляет визуальное состояние кнопки оплаты.
-- `_validateForm(): void` - валидация формы.
 #### Используются следующие свойства: 
 - `valid(value: boolean)` - управление состоянием кнопки.
 - `errors(value: string)` - установка текста ошибки.
@@ -356,7 +350,6 @@ export interface IFormState {
 #### Используются следующие свойства: 
 - `counter(value: number)` - используется счетчик товаров.
 - `catalog(items: HTMLElement[])` - замена товаров в катологе.
-- `basketButton(): HTMLButtonElement` - получение кнопки корзины.
 - `locked(value: boolean)` - блокировка прокрутки страницы.
 ---
 ### Класс `Success` отвечает за управление модальное окно успеха, наследует методы и свойства класса `Component`.
