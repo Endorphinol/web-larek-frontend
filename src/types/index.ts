@@ -37,6 +37,7 @@ export interface IContactsForm {
 }
 // Элемент корзины.
 export interface IBasketItem {
+    id: string;
 	index: number;
 	title: string;
 	price: number;

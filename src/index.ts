@@ -88,13 +88,18 @@ events.on('basket:changed', () => {
 	page.counter = appData.basket.length;
 	basket.items = appData.basket.map((id, index) => {
 		const item = appData.catalog.find((item) => item.id === id);
-		const basketItem = new BasketItem(cloneTemplate(cardBasketItemTemplate), {
-			onClick: () => events.emit('basket:remove', { id }),
-		});
+		const basketItem = new BasketItem(
+			cloneTemplate(cardBasketItemTemplate),
+			events,
+			{
+				onClick: () => events.emit('basket:toggle', { id }),
+			}
+		);
 		return basketItem.render({
 			index: index + 1,
 			title: item.title,
 			price: item.price,
+            id: id,
 		});
 	});
 	basket.total = appData.getTotal();
@@ -114,12 +119,6 @@ events.on('basket:toggle', (item: IProductItem) => {
 	} else {
 		appData.addToBasket(item);
 	}
-});
-
-// Удаление товара из корзины.
-events.on('basket:remove', (event: { id: string }) => {
-	appData.removeFromBasket(event.id);
-	events.emit('basket:changed');
 });
 
 // Блокировка прокрутки при открытии модального окна.
@@ -149,8 +148,8 @@ events.on('order:success', (data: { total: number }) => {
 events.on('order:open', () => {
 	modal.render({
 		content: order.render({
-			payment: '',
-			address: '',
+			payment: appData.order.payment,
+			address: appData.order.address,
 		}),
 	});
 });
@@ -160,6 +159,7 @@ events.on(
 	'order.payment:change',
 	(data: { field: keyof IOrderForm; value: string }) => {
 		appData.setOrderField(data.field, data.value);
+		appData.validateOrder();
 	}
 );
 
@@ -168,6 +168,7 @@ events.on(
 	'order.address:change',
 	(data: { field: keyof IOrderForm; value: string }) => {
 		appData.setOrderField(data.field, data.value);
+		order.valid = appData.validateOrder();
 	}
 );
 
@@ -176,6 +177,7 @@ events.on(
 	'contacts.email:change',
 	(data: { field: keyof IContactsForm; value: string }) => {
 		appData.setOrderField(data.field as 'email' | 'phone', data.value);
+		appData.validateContacts();
 	}
 );
 
@@ -184,6 +186,7 @@ events.on(
 	'contacts.phone:change',
 	(data: { field: keyof IContactsForm; value: string }) => {
 		appData.setOrderField(data.field as 'email' | 'phone', data.value);
+		appData.validateContacts();
 	}
 );
 
@@ -210,6 +213,7 @@ events.on('contacts:open', () => {
 events.on('formErrors:change', (errors: FormErrors) => {
 	const messages = Object.values(errors).filter(Boolean).join('; ');
 	order.errors = messages;
+	contacts.errors = messages;
 });
 
 // Отправка контактов форма.
@@ -217,7 +221,7 @@ events.on('contacts:submit', (data: { email: string; phone: string }) => {
 	appData.setOrderField('email', data.email);
 	appData.setOrderField('phone', data.phone);
 
-	if (appData.validateOrder()) {
+	if (appData.validateContacts()) {
 		const total = appData.getTotal();
 		api
 			.orderItems({

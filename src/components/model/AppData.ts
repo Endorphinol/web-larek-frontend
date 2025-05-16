@@ -25,8 +25,8 @@ export class AppState {
 	events: IEvents;
 
 	constructor(events: IEvents) {
-        this.events = events;
-    }
+		this.events = events;
+	}
 
 	// Получить общую стоимость в корзине.
 	getTotal(): number {
@@ -74,30 +74,45 @@ export class AppState {
 		this.events.emit('preview:changed', item);
 	}
 
+	// Валидация заказа.
+	validateOrder(): boolean {
+		const errors: FormErrors = {};
+		const isValid = !(!this.order.payment || !this.order.address || this.order.address.trim().length < 5);
+		
+		if (!this.order.payment) errors.payment = 'Выберите способ оплаты';
+		if (!this.order.address || this.order.address.trim().length < 5) {
+			errors.address = 'Адрес должен содержать минимум 5 символов';
+		}
+	
+		this.events.emit('formErrors:change', errors);
+		return isValid;
+	}
+
+	// Валидация контактов.
+	validateContacts(): boolean {
+		const errors: FormErrors = {};
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+		if (!this.order.email || !emailRegex.test(this.order.email)) {
+			errors.email = 'Введите корректный email';
+		}
+
+		if (!this.order.phone || this.order.phone.replace(/\D/g, '').length < 11) {
+			errors.phone = 'Телефон должен содержать 11 цифр';
+		}
+
+		this.events.emit('formErrors:change', errors);
+		return Object.keys(errors).length === 0;
+	}
+
 	// Обновление полей заказа.
 	setOrderField(field: keyof IOrderForm | keyof IContactsForm, value: string) {
 		if (field === 'payment' || field === 'address') {
 			this.order[field] = value;
+			this.validateOrder();
 		} else if (field === 'email' || field === 'phone') {
 			this.order[field] = value;
+			this.validateContacts();
 		}
-		this.validateOrder();
-	}
-
-	// Валидация заказа.
-	validateOrder() {
-		const errors: FormErrors = {};
-		this.formErrors = errors;
-
-		if (!this.order.payment) {
-			errors.payment = 'Выберите способ оплаты';
-		}
-
-		if (!this.order.address || this.order.address.trim().length < 5) {
-			errors.address = 'Введите корректный адрес (минимум 5 символов)';
-		}
-
-		this.events.emit('formErrors:change', this.formErrors);
-		return Object.keys(errors).length === 0;
 	}
 }

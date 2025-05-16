@@ -31,7 +31,6 @@ export class Order extends Component<IOrderForm> {
 			button.addEventListener('click', () => {
 				this._selectedPayment = button.name;
 				this._updatePaymentUI();
-				this._validateForm();
 				this.events.emit('order.payment:change', {
 					field: 'payment',
 					value: this._selectedPayment,
@@ -41,7 +40,6 @@ export class Order extends Component<IOrderForm> {
 
 		// Обработчик для поля адреса.
 		this._addressInput.addEventListener('input', () => {
-			this._validateForm();
 			this.events.emit('order.address:change', {
 				field: 'address',
 				value: this._addressInput.value,
@@ -58,9 +56,6 @@ export class Order extends Component<IOrderForm> {
 				});
 			}
 		});
-
-		// Изначальная валидация.
-		this._validateForm();
 	}
   
 	// Обновляет визуальное состояние кнопки оплаты (выбор).
@@ -71,16 +66,6 @@ export class Order extends Component<IOrderForm> {
 				button.name === this._selectedPayment
 			);
 		});
-	}
-
-	// Валидация формы.
-	private _validateForm(): void {
-		const isAddressValid = this._addressInput.value.trim().length > 0;
-		const isPaymentSelected = this._selectedPayment !== null;
-		this.setDisabled(
-			this._submitButton,
-			!(isAddressValid && isPaymentSelected)
-		);
 	}
 
 	// Управление состоянием кнопки.

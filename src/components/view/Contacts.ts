@@ -28,7 +28,6 @@ export class Contacts extends Component<IContactsForm> {
 		this._errors = ensureElement<HTMLElement>('.form__errors', container);
 
 		this._emailInput.addEventListener('input', () => {
-			this._validateForm();
 			this.events.emit('contacts.email:change', {
 				field: 'email',
 				value: this._emailInput.value,
@@ -36,51 +35,15 @@ export class Contacts extends Component<IContactsForm> {
 		});
 
 		this._phoneInput.addEventListener('input', () => {
-			this._validateForm();
 			this.events.emit('contacts.phone:change', {
 				field: 'phone',
 				value: this._phoneInput.value,
 			});
 		});
-
-		this.container.addEventListener('submit', (e) => {
-			e.preventDefault();
-			if (this._validateForm()) {
-				this.events.emit('contacts:submit', {
-					email: this._emailInput.value,
-					phone: this._phoneInput.value,
-				});
-			}
-		});
-		// Изначальная валидация.
-		this._validateForm();
-	}
-
-	// Валидация формы общая.
-	private _validateForm(): boolean {
-		const isEmailValid = this._validateEmail(this._emailInput.value);
-		const isPhoneValid = this._validatePhone(this._phoneInput.value);
-		// Проверка валидности полей.
-		if (!isEmailValid) {
-			this.errors = 'Введите корректный email';
-		} else if (!isPhoneValid) {
-			this.errors = 'Введите корректный телефон';
-		} else {
-			this.errors = '';
-		}
-		this.setDisabled(this._submitButton, !(isEmailValid && isPhoneValid));
-		return isEmailValid && isPhoneValid;
-	}
-
-	// Проверка валидности электронной почты.
-	private _validateEmail(email: string): boolean {
-		const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		return re.test(email);
-	}
-
-	// Проверка валидности телефонного номера.
-	private _validatePhone(phone: string): boolean {
-		return phone.replace(/\D/g, '').length >= 11;
+		this.container.addEventListener('submit', (event) => {
+            event.preventDefault();
+            this.events.emit('contacts:submit');
+        });
 	}
 
 	// Блокировка / разблокировка кнопка отправки.
