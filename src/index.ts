@@ -192,11 +192,8 @@ events.on(
 
 // Оформление заказа.
 events.on('order:submit', (data: { payment: string; address: string }) => {
-	if (appData.validateOrder()) {
-		appData.setOrderField('payment', data.payment);
-		appData.setOrderField('address', data.address);
+	if (appData.validateOrder()) {  
 		events.emit('contacts:open');
-		events.emit('modal:close');
 	}
 });
 
@@ -222,14 +219,7 @@ events.on('contacts:submit', () => {
 	if (appData.validateContacts()) {
 		const total = appData.getTotal();
 		api
-			.orderItems({
-				payment: appData.order.payment,
-				address: appData.order.address,
-				email: appData.order.email,
-				phone: appData.order.phone,
-                items: appData.basket,
-				total: total,
-			})
+			.orderItems(appData.getOrderData())
 			.then(() => {
 				modal.close();
 				events.emit('order:success', { total });

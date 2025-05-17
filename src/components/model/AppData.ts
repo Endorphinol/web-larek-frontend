@@ -117,8 +117,17 @@ export class AppState {
 		}
 	}
 
-	// Геттер для basket
+	// Геттер для basket.
 	get basket(): string[] {
 		return this._basket;
+	}
+
+	// Формирование заказа.
+	getOrderData(): IOrder {
+		return {
+			...this.order,
+			items: this._basket,
+			total: this.getTotal(),
+		};
 	}
 }
