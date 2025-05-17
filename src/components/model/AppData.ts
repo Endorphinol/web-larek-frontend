@@ -8,13 +8,12 @@ import {
 } from './../../types/index';
 
 export class AppState {
-	basket: string[] = [];
+	protected _basket: string[] = [];
 	catalog: IProductItem[] = [];
 	loading: boolean;
-	order: IOrder = {
+	order: Omit<IOrder, 'items'> = {
 		email: '',
 		phone: '',
-		items: [],
 		payment: '',
 		address: '',
 		total: 0,
@@ -30,7 +29,7 @@ export class AppState {
 
 	// Получить общую стоимость в корзине.
 	getTotal(): number {
-		return this.basket.reduce((total, id) => {
+		return this._basket.reduce((total, id) => {
 			const item = this.catalog.find((item) => item.id === id);
 			return total + (item?.price || 0);
 		}, 0);
@@ -44,8 +43,8 @@ export class AppState {
 
 	// Добавить товар в корзину.
 	addToBasket(item: IProductItem): void {
-		if (!this.basket.includes(item.id)) {
-			this.basket.push(item.id);
+		if (!this._basket.includes(item.id)) {
+			this._basket.push(item.id);
 			this.updateBasket();
 		}
 	}
@@ -53,18 +52,18 @@ export class AppState {
 	// Обновление корзины.
 	private updateBasket(): void {
 		this.events.emit('basket:changed');
-		this.events.emit('counter:updated', { basket: this.basket.length });
+		this.events.emit('counter:updated', { basket: this._basket.length });
 	}
 
 	// Удалить товар с корзины.
 	removeFromBasket(id: string): void {
-		this.basket = this.basket.filter((item) => item !== id);
+		this._basket = this._basket.filter((item) => item !== id);
 		this.updateBasket();
 	}
 
 	// Очистить корзину.
 	clearBasket(): void {
-		this.basket = [];
+		this._basket = [];
 		this.updateBasket();
 	}
 
@@ -116,5 +115,10 @@ export class AppState {
 			this.order[field] = value;
 			this.validateContacts();
 		}
+	}
+
+	// Геттер для basket
+	get basket(): string[] {
+		return this._basket;
 	}
 }

@@ -24,7 +24,8 @@ const api = new LarekAPI(CDN_URL, API_URL);
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#basket');
-const cardBasketItemTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
+const cardBasketItemTemplate =
+	ensureElement<HTMLTemplateElement>('#card-basket');
 const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
 const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');
@@ -226,13 +227,16 @@ events.on('contacts:submit', () => {
 				address: appData.order.address,
 				email: appData.order.email,
 				phone: appData.order.phone,
-				items: appData.basket,
+                items: appData.basket,
 				total: total,
 			})
 			.then(() => {
 				modal.close();
 				events.emit('order:success', { total });
 				appData.clearBasket();
+			})
+			.catch((err) => {
+				console.error('Ошибка оформления заказа:', err);
 			});
 	}
 });
